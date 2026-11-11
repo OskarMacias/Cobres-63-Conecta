@@ -21,7 +21,7 @@
         }
     </script>
 </head>
-<body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col pb-16 md:pb-0">
+<body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col pb-20">
 
     <!-- HEADER / LOGO BAR -->
     <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
@@ -58,7 +58,7 @@
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main class="flex-grow max-w-3xl w-full mx-auto px-4 py-4 mb-16 md:mb-0">
+    <main class="flex-grow max-w-3xl w-full mx-auto px-4 py-4 mb-16">
 
         <!-- AUTH SECTION -->
         <div id="auth-container" class="max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 mt-4">
@@ -188,7 +188,11 @@
                     <h3 id="my-prof-name" class="font-bold text-base text-gray-800">Nombre del usuario</h3>
                     <p id="my-prof-role" class="text-xs bg-green-100 text-cobaesGreen inline-block px-2.5 py-0.5 rounded-full font-bold mt-1">Alumno</p>
                     <p id="my-prof-bio" class="text-xs text-gray-500 mt-2 italic">Sin descripción</p>
-                    <button onclick="shareMyProfileWhatsApp()" class="mt-3 bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl inline-flex items-center gap-1.5 shadow">
+                    
+                    <!-- REDES SOCIALES COMO ENLACES CLICKEABLES -->
+                    <div id="my-prof-socials" class="flex justify-center space-x-4 mt-3 pt-3 border-t border-gray-100 text-lg"></div>
+
+                    <button onclick="shareMyProfileWhatsApp()" class="mt-4 bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl inline-flex items-center gap-1.5 shadow">
                         <i class="fa-brands fa-whatsapp"></i> Compartir Perfil en WhatsApp
                     </button>
                 </div>
@@ -202,9 +206,9 @@
                             <option value="public">Redes Públicas para todos</option>
                             <option value="friends">Redes solo para Amigos</option>
                         </select>
-                        <input type="text" id="edit-fb" placeholder="Facebook" class="w-full px-3 py-1.5 rounded-xl border text-xs">
-                        <input type="text" id="edit-ig" placeholder="Instagram" class="w-full px-3 py-1.5 rounded-xl border text-xs">
-                        <input type="text" id="edit-tk" placeholder="TikTok" class="w-full px-3 py-1.5 rounded-xl border text-xs">
+                        <input type="text" id="edit-fb" placeholder="Facebook (ej. oskar.macias)" class="w-full px-3 py-1.5 rounded-xl border text-xs">
+                        <input type="text" id="edit-ig" placeholder="Instagram (ej. @oskarmacias)" class="w-full px-3 py-1.5 rounded-xl border text-xs">
+                        <input type="text" id="edit-tk" placeholder="TikTok (ej. @oskarmacias)" class="w-full px-3 py-1.5 rounded-xl border text-xs">
                         <button type="submit" class="bg-cobaesGreen text-white font-bold px-5 py-2 rounded-xl text-xs shadow">Guardar Cambios</button>
                     </form>
                 </div>
@@ -345,7 +349,7 @@
         </div>
     </div>
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+    <!-- BARRA DE NAVEGACIÓN INFERIOR (SIEMPRE FIJA Y VISIBLE) -->
     <nav id="bottom-nav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg py-2 px-6 flex justify-around items-center z-50">
         <button onclick="switchView('feed')" id="nav-btn-feed" class="flex flex-col items-center text-cobaesGreen">
             <i class="fa-solid fa-house text-lg"></i>
@@ -465,11 +469,30 @@
                 avTxt.classList.remove('hidden');
             }
 
+            renderProfileSocials(currentUser);
+
             const adminBtn = document.getElementById('admin-menu-btn');
             if (currentUser.isAdmin) { adminBtn.classList.remove('hidden'); } else { adminBtn.classList.add('hidden'); }
 
             renderNotificationsBadge();
             switchView('feed');
+        }
+
+        function renderProfileSocials(user) {
+            let socialsHtml = '';
+            if (user.fb) {
+                let fbLink = user.fb.startsWith('http') ? user.fb : `https://facebook.com/${user.fb}`;
+                socialsHtml += `<a href="${fbLink}" target="_blank" class="text-blue-600 hover:opacity-80"><i class="fa-brands fa-facebook"></i></a>`;
+            }
+            if (user.ig) {
+                let igUser = user.ig.replace('@','');
+                socialsHtml += `<a href="https://instagram.com/${igUser}" target="_blank" class="text-pink-600 hover:opacity-80"><i class="fa-brands fa-instagram"></i></a>`;
+            }
+            if (user.tk) {
+                let tkUser = user.tk.replace('@','');
+                socialsHtml += `<a href="https://tiktok.com/@${tkUser}" target="_blank" class="text-black hover:opacity-80"><i class="fa-brands fa-tiktok"></i></a>`;
+            }
+            document.getElementById('my-prof-socials').innerHTML = socialsHtml || '<span class="text-xs text-gray-400">Sin redes sociales registradas</span>';
         }
 
         function switchView(viewName) {
@@ -491,7 +514,6 @@
             if (viewName === 'admin') renderAdminSuggestions();
         }
 
-        // CARGAR FOTO DIRECTAMENTE DESDE EL AVATAR DE PERFIL
         function uploadProfileAvatarDirect(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -508,7 +530,6 @@
             }
         }
 
-        // ACTUALIZAR INFORMACIÓN Y NOMBRE DESDE EL FORMULARIO
         function loadProfileSettings() {
             document.getElementById('edit-name').value = currentUser.name;
             document.getElementById('edit-bio').value = currentUser.bio || '';
