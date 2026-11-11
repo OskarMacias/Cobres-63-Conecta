@@ -59,7 +59,6 @@
             </div>
 
             <div class="p-6">
-                <!-- Tabs -->
                 <div class="flex border-b border-gray-200 mb-6">
                     <button onclick="switchTab('login')" id="tab-login" class="flex-1 pb-3 text-sm font-bold text-cobaesGreen border-b-2 border-cobaesGreen transition">Iniciar Sesión</button>
                     <button onclick="switchTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent transition">Registro Escolar</button>
@@ -85,22 +84,22 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nombre Completo</label>
-                            <input type="text" id="reg-name" required class="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-cobaesGreen focus:outline-none" placeholder="Tu nombre">
+                            <input type="text" id="reg-name" required class="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm focus:outline-none" placeholder="Tu nombre">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Usuario</label>
-                            <input type="text" id="reg-username" required class="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-cobaesGreen focus:outline-none" placeholder="@usuario">
+                            <input type="text" id="reg-username" required class="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm focus:outline-none" placeholder="@usuario">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Contraseña</label>
-                            <input type="password" id="reg-password" required class="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-cobaesGreen focus:outline-none" placeholder="••••••••">
+                            <input type="password" id="reg-password" required class="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm focus:outline-none" placeholder="••••••••">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Rol Escolar</label>
-                            <select id="reg-role" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm bg-white focus:ring-2 focus:ring-cobaesGreen focus:outline-none">
+                            <select id="reg-role" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm bg-white focus:outline-none">
                                 <option value="Alumno">Alumno Vigente</option>
                                 <option value="Docente">Docente / Profesor</option>
                             </select>
@@ -109,26 +108,31 @@
 
                     <div>
                         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Matrícula Escolar o Código Docente</label>
-                        <input type="text" id="reg-code" required class="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-cobaesGreen focus:outline-none" placeholder="Ej. 2026-CB63-XXXX">
-                        <p class="text-[11px] text-gray-500 mt-1"><i class="fa-solid fa-shield-halved text-cobaesGreen mr-1"></i> Verificación obligatoria para personal y alumnos activos.</p>
+                        <input type="text" id="reg-code" required class="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-sm focus:outline-none" placeholder="Ej. 2026-CB63-XXXX">
                     </div>
 
-                    <div class="border-t pt-3 border-gray-100">
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Conectar Redes Sociales (Opcional)</label>
-                        <div class="space-y-2">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-blue-600 w-5 text-center"><i class="fa-brands fa-facebook"></i></span>
-                                <input type="text" id="reg-fb" placeholder="Usuario o Enlace de Facebook" class="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:ring-1 focus:ring-cobaesGreen focus:outline-none">
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-pink-600 w-5 text-center"><i class="fa-brands fa-instagram"></i></span>
-                                <input type="text" id="reg-ig" placeholder="@usuario de Instagram" class="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:ring-1 focus:ring-cobaesGreen focus:outline-none">
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-black w-5 text-center"><i class="fa-brands fa-tiktok"></i></span>
-                                <input type="text" id="reg-tk" placeholder="@usuario de TikTok" class="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:ring-1 focus:ring-cobaesGreen focus:outline-none">
-                            </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Enlace de Foto de Perfil (Opcional)</label>
+                        <input type="url" id="reg-avatar" class="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-sm focus:outline-none" placeholder="https://... (URL de tu foto)">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Biografía o Descripción</label>
+                        <textarea id="reg-bio" rows="2" class="w-full p-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none" placeholder="Cuéntanos algo sobre ti..."></textarea>
+                    </div>
+
+                    <!-- Redes Sociales y Privacidad -->
+                    <div class="border-t pt-3 border-gray-100 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-gray-700 uppercase">Redes Sociales y Privacidad</label>
+                            <select id="reg-social-privacy" class="text-xs bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 font-semibold text-cobaesGreen">
+                                <option value="public">Público para todos</option>
+                                <option value="friends">Solo Amigos</option>
+                            </select>
                         </div>
+                        <input type="text" id="reg-fb" placeholder="Facebook (Usuario/Enlace)" class="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs">
+                        <input type="text" id="reg-ig" placeholder="Instagram (@usuario)" class="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs">
+                        <input type="text" id="reg-tk" placeholder="TikTok (@usuario)" class="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs">
                     </div>
 
                     <button type="submit" class="w-full bg-cobaesGreen hover:bg-cobaesLightGreen text-white font-bold py-3 rounded-xl shadow-md transition text-sm mt-2">
@@ -141,12 +145,13 @@
         <!-- FEED SECTION (HIDDEN UNTIL LOGIN) -->
         <div id="feed-container" class="hidden grid grid-cols-1 md:grid-cols-4 gap-6">
             
-            <!-- Sidebar Izquierda: Perfil y Filtros -->
+            <!-- Sidebar Izquierda: Perfil, Redes y Amigos -->
             <div class="md:col-span-1 space-y-4">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 text-center">
                     <div class="relative inline-block mx-auto mb-2">
-                        <div id="profile-avatar" class="w-20 h-20 bg-cobaesGreen text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto shadow-inner">
-                            U
+                        <div id="profile-avatar-container" class="w-20 h-20 bg-cobaesGreen text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto shadow-inner overflow-hidden">
+                            <span id="profile-avatar-text">U</span>
+                            <img id="profile-avatar-img" src="" alt="" class="w-full h-full object-cover hidden">
                         </div>
                         <span class="absolute bottom-0 right-0 bg-blue-500 text-white p-1 rounded-full text-xs" title="Verificado COBAES 63">
                             <i class="fa-solid fa-circle-check"></i>
@@ -154,20 +159,26 @@
                     </div>
                     <h3 id="profile-name" class="font-bold text-gray-800 text-base">Nombre Usuario</h3>
                     <p id="profile-role-badge" class="inline-block bg-green-100 text-cobaesGreen text-xs font-bold px-2.5 py-0.5 rounded-full mt-1">Alumno</p>
+                    <p id="profile-bio" class="text-xs text-gray-500 mt-2 px-1 italic">Sin descripción...</p>
                     
-                    <div id="profile-socials" class="flex justify-center space-x-3 mt-3 pt-3 border-t border-gray-100 text-lg">
-                        <!-- Redes dinámicas -->
-                    </div>
+                    <!-- Redes Sociales en Perfil (Con control de visibilidad) -->
+                    <div id="profile-socials" class="flex justify-center space-x-3 mt-3 pt-3 border-t border-gray-100 text-lg"></div>
                 </div>
 
-                <!-- Categorías -->
+                <!-- Menú de Navegación -->
                 <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 space-y-1">
                     <p class="text-xs font-bold text-gray-400 px-3 uppercase mb-2">Secciones</p>
                     <button onclick="switchView('feed')" id="nav-btn-feed" class="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold bg-green-50 text-cobaesGreen transition flex items-center gap-2">
                         <i class="fa-solid fa-globe w-5"></i> Todo el Muro
                     </button>
+                    <button onclick="switchView('friends')" id="nav-btn-friends" class="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-group w-5 text-emerald-600"></i> Amigos / Comunidad
+                    </button>
+                    <button onclick="switchView('messages')" id="nav-btn-messages" class="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-comments w-5 text-blue-600"></i> Mensajes Privados
+                    </button>
                     <button onclick="switchView('inbox')" id="nav-btn-inbox" class="w-full text-left px-3 py-2 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition flex items-center gap-2">
-                        <i class="fa-solid fa-inbox w-5 text-purple-600"></i> Buzón / Sugerencias
+                        <i class="fa-solid fa-life-ring w-5 text-purple-600"></i> Soporte / Sugerencias
                     </button>
                     <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden w-full text-left px-3 py-2 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition flex items-center gap-2">
                         <i class="fa-solid fa-shield-halved w-5 text-amber-600"></i> Panel Admin <span id="admin-badge-count" class="bg-red-500 text-white text-[10px] px-1.5 py-0.2 rounded-full ml-auto">0</span>
@@ -180,80 +191,94 @@
                 
                 <!-- VISTA 1: MURO PRINCIPAL -->
                 <div id="view-feed" class="space-y-4">
-                    <!-- Crear Publicación -->
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
                         <form onsubmit="createPost(event)" class="space-y-3">
                             <textarea id="post-text" rows="2" placeholder="¿Qué pasa en COBAES 63 Villa Juárez hoy?" class="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-cobaesGreen focus:outline-none text-sm resize-none"></textarea>
                             
                             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100">
-                                <div class="flex items-center space-x-2">
+                                <div class="flex gap-2">
                                     <select id="post-category" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none">
                                         <option value="general">Estado / Social</option>
                                         <option value="noticias">Noticia Oficial / Plantel</option>
+                                    </select>
+                                    <select id="post-audience" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none">
+                                        <option value="public">Público</option>
+                                        <option value="friends">Solo Amigos</option>
+                                        <option value="best_friends">Mejores Amigos 🌟</option>
                                     </select>
                                 </div>
                                 <button type="submit" class="bg-cobaesGreen hover:bg-cobaesLightGreen text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow transition">
                                     Publicar
                                 </button>
                             </div>
-                            <input type="text" id="post-media-input" placeholder="Enlace de imagen o video (ej. https://...)" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:ring-1 focus:ring-cobaesGreen focus:outline-none">
+                            <input type="text" id="post-media-input" placeholder="Enlace de imagen o video (ej. https://...)" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs">
                         </form>
                     </div>
 
-                    <!-- Filtros Feed -->
                     <div class="flex space-x-2">
                         <button onclick="filterFeed('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cobaesGreen text-white">Todo</button>
                         <button onclick="filterFeed('noticias')" id="filter-noticias" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-gray-600 border border-gray-200">Noticias Oficiales</button>
                         <button onclick="filterFeed('general')" id="filter-general" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-gray-600 border border-gray-200">Estados</button>
                     </div>
 
-                    <!-- Feed de Publicaciones -->
                     <div id="posts-feed" class="space-y-4"></div>
                 </div>
 
-                <!-- VISTA 2: BUZÓN DE SUGERENCIAS (INBOX PARA ALUMNOS/DOCENTES) -->
-                <div id="view-inbox" class="hidden space-y-4">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                        <h3 class="font-bold text-lg text-cobaesGreen mb-1"><i class="fa-solid fa-inbox mr-2"></i> Buzón de Sugerencias y Reportes</h3>
-                        <p class="text-xs text-gray-500 mb-4">Envía tus propuestas de mejora, ideas para la red social o reportes de errores directamente al panel de administración de COBAES 63.</p>
-                        
-                        <form onsubmit="sendSuggestion(event)" class="space-y-3">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Asunto / Motivo</label>
-                                <input type="text" id="sugg-subject" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-cobaesGreen focus:outline-none" placeholder="Ej. Sugerencia de nueva función / Error en comentarios">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Mensaje o Detalle</label>
-                                <textarea id="sugg-message" rows="4" required class="w-full p-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-cobaesGreen focus:outline-none" placeholder="Explícanos tu sugerencia o describe el error detalladamente..."></textarea>
-                            </div>
-                            <button type="submit" class="bg-cobaesGreen hover:bg-cobaesLightGreen text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow">
-                                Enviar al Administrador
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-sm text-gray-800 mb-3">Tus mensajes enviados al administrador</h4>
-                        <div id="my-suggestions-list" class="space-y-2">
+                <!-- VISTA 2: AMIGOS Y COMUNIDAD -->
+                <div id="view-friends" class="hidden space-y-4">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
+                        <div>
+                            <h3 class="font-bold text-base text-cobaesGreen mb-1"><i class="fa-solid fa-user-group mr-2"></i> Alumnos y Docentes de COBAES 63</h3>
+                            <p class="text-xs text-gray-500">Conecta con tus compañeros y profesores, agrega amigos o agrégalos a tu lista de mejores amigos.</p>
+                        </div>
+                        <div id="community-users-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <!-- Se llena dinámicamente -->
                         </div>
                     </div>
                 </div>
 
-                <!-- VISTA 3: PANEL DE ADMINISTRADOR -->
-                <div id="view-admin" class="hidden space-y-4">
-                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-center justify-between">
-                        <div>
-                            <h3 class="font-bold text-amber-900 text-base"><i class="fa-solid fa-shield-halved mr-2"></i> Panel de Administración - COBAES 63</h3>
-                            <p class="text-xs text-amber-700">Visualiza el inbox de sugerencias, propuestas de mejoras y reportes de usuarios.</p>
+                <!-- VISTA 3: MENSAJERÍA DIRECTA -->
+                <div id="view-messages" class="hidden space-y-4">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 grid grid-cols-1 md:grid-cols-3 overflow-hidden min-h-[450px]">
+                        <div class="border-r border-gray-200 p-4 bg-gray-50 flex flex-col">
+                            <h3 class="font-bold text-sm text-gray-700 mb-3"><i class="fa-solid fa-comments mr-1"></i> Chats con Amigos</h3>
+                            <div id="chat-users-list" class="space-y-1.5 overflow-y-auto flex-grow max-h-[400px]"></div>
+                        </div>
+                        <div class="md:col-span-2 flex flex-col justify-between bg-white">
+                            <div id="chat-header" class="p-3.5 border-b border-gray-200 bg-gray-50 flex items-center space-x-3">
+                                <span class="text-xs text-gray-400">Selecciona un amigo para chatear.</span>
+                            </div>
+                            <div id="chat-messages-box" class="p-4 overflow-y-auto flex-grow space-y-3 max-h-[320px]">
+                                <div class="text-center text-gray-400 text-xs mt-20">No hay chat seleccionado.</div>
+                            </div>
+                            <form id="chat-form" onsubmit="sendPrivateMessage(event)" class="p-3 border-t border-gray-200 flex gap-2 hidden">
+                                <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="flex-grow px-3 py-2 rounded-xl border text-xs focus:outline-none">
+                                <button type="submit" class="bg-cobaesGreen text-white px-4 py-2 rounded-xl text-xs font-bold">Enviar</button>
+                            </form>
                         </div>
                     </div>
+                </div>
 
+                <!-- VISTA 4: SUGERENCIAS -->
+                <div id="view-inbox" class="hidden space-y-4">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                        <h4 class="font-bold text-sm text-gray-800 mb-4">Buzón de Entrada (Sugerencias y Errores Recibidos)</h4>
-                        <div id="admin-suggestions-list" class="space-y-3">
-                            <!-- Se llena dinámicamente -->
-                        </div>
+                        <h3 class="font-bold text-lg text-cobaesGreen mb-1"><i class="fa-solid fa-life-ring mr-2"></i> Buzón de Sugerencias</h3>
+                        <form onsubmit="sendSuggestion(event)" class="space-y-3 mt-3">
+                            <input type="text" id="sugg-subject" required class="w-full px-3 py-2 rounded-xl border text-sm" placeholder="Asunto / Motivo">
+                            <textarea id="sugg-message" rows="3" required class="w-full p-3 rounded-xl border text-sm" placeholder="Explícanos tu sugerencia..."></textarea>
+                            <button type="submit" class="bg-cobaesGreen text-white font-bold px-5 py-2 rounded-xl text-xs">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- VISTA 5: ADMIN -->
+                <div id="view-admin" class="hidden space-y-4">
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl">
+                        <h3 class="font-bold text-amber-900 text-base"><i class="fa-solid fa-shield-halved mr-2"></i> Panel de Administración - COBAES 63</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                        <h4 class="font-bold text-sm text-gray-800 mb-4">Sugerencias Recibidas</h4>
+                        <div id="admin-suggestions-list" class="space-y-3"></div>
                     </div>
                 </div>
 
@@ -270,12 +295,11 @@
 
     <!-- SCRIPT DE FUNCIONALIDAD -->
     <script>
-        // Estado local de la aplicación
         let currentUser = JSON.parse(localStorage.getItem('cobaes_current_user')) || null;
         let users = JSON.parse(localStorage.getItem('cobaes_users')) || [
-            { name: "Oskar Macías (Admin)", username: "admin", pass: "admin123", role: "Administrador", code: "ADM-63-000", fb: "oskar.macias", ig: "@oskarmacias", tk: "", isAdmin: true },
-            { name: "Prof. Roberto Zazueta", username: "profsazueta", pass: "1234", role: "Docente", code: "DOC-63-001", fb: "roberto.zazueta", ig: "@profr_zazueta", tk: "" },
-            { name: "Valeria Soto", username: "vale_soto", pass: "1234", role: "Alumno", code: "2026-CB63-4412", fb: "", ig: "@valesoto_63", tk: "" }
+            { name: "Oskar Macías (Admin)", username: "admin", pass: "admin123", role: "Administrador", code: "ADM-63-000", bio: "Admin general COBAES 63", avatar: "", socialPrivacy: "public", fb: "oskar.macias", ig: "@oskarmacias", tk: "", friends: ["val_soto"], bestFriends: [], isAdmin: true },
+            { name: "Prof. Roberto Zazueta", username: "profsazueta", pass: "1234", role: "Docente", code: "DOC-63-001", bio: "Profesor de Matemáticas", avatar: "", socialPrivacy: "public", fb: "roberto.zazueta", ig: "@profr_zazueta", tk: "", friends: [], bestFriends: [] },
+            { name: "Valeria Soto", username: "val_soto", pass: "1234", role: "Alumno", code: "2026-CB63-4412", bio: "Estudiante de 4to semestre", avatar: "", socialPrivacy: "friends", fb: "valeria.soto", ig: "@valesoto", tk: "@valetk", friends: ["admin"], bestFriends: ["admin"] }
         ];
         
         let posts = JSON.parse(localStorage.getItem('cobaes_posts')) || [
@@ -285,22 +309,20 @@
                 username: "profsazueta",
                 role: "Docente",
                 category: "noticias",
-                text: "¡Atención alumnos de COBAES 63 Villa Juárez! Se les recuerda que las inscripciones para el torneo inter-grupos inician este lunes. ⚽📚",
-                media: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=60",
-                mediaType: "image",
+                audience: "public",
+                text: "¡Atención alumnos de COBAES 63 Villa Juárez! Torneo inter-grupos este lunes. ⚽📚",
+                media: "",
+                mediaType: "none",
                 timestamp: "Hace 2 horas",
                 likes: 14,
                 likedBy: [],
-                comments: [
-                    { author: "Valeria Soto", text: "¡Ahí estaremos listos profe!" }
-                ]
+                comments: []
             }
         ];
 
-        let suggestions = JSON.parse(localStorage.getItem('cobaes_suggestions')) || [
-            { id: 1, author: "Valeria Soto", role: "Alumno", subject: "Sugerencia de modo oscuro", message: "Estaría excelente que agreguen un botón de modo oscuro para la noche.", timestamp: "Hace 1 día" }
-        ];
-
+        let suggestions = JSON.parse(localStorage.getItem('cobaes_suggestions')) || [];
+        let messages = JSON.parse(localStorage.getItem('cobaes_messages')) || [];
+        let activeChatUser = null;
         let currentFilter = 'all';
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -335,28 +357,24 @@
             const pass = document.getElementById('reg-password').value;
             const role = document.getElementById('reg-role').value;
             const code = document.getElementById('reg-code').value.trim();
+            const avatar = document.getElementById('reg-avatar').value.trim();
+            const bio = document.getElementById('reg-bio').value.trim();
+            const socialPrivacy = document.getElementById('reg-social-privacy').value;
             const fb = document.getElementById('reg-fb').value.trim();
             const ig = document.getElementById('reg-ig').value.trim();
             const tk = document.getElementById('reg-tk').value.trim();
 
             if (users.some(u => u.username === username)) {
-                alert('El nombre de usuario ya está registrado.');
+                alert('El usuario ya está registrado.');
                 return;
             }
 
-            if (code.length < 5) {
-                alert('Código de verificación o matrícula no válido para COBAES 63.');
-                return;
-            }
-
-            const newUser = { name, username, pass, role, code, fb, ig, tk, isAdmin: false };
+            const newUser = { name, username, pass, role, code, avatar, bio, socialPrivacy, fb, ig, tk, friends: [], bestFriends: [], isAdmin: false };
             users.push(newUser);
             localStorage.setItem('cobaes_users', JSON.stringify(users));
 
             currentUser = newUser;
             localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
-            
-            alert('¡Registro exitoso! Verificado como miembro activo de COBAES 63.');
             showFeedView();
         }
 
@@ -384,16 +402,33 @@
         }
 
         function showFeedView() {
+            // Actualizar datos del usuario actual desde la lista global
+            currentUser = users.find(u => u.username === currentUser.username);
+
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('feed-container').classList.remove('hidden');
             document.getElementById('header-user-info').classList.remove('hidden');
             document.getElementById('nav-user-name').innerText = currentUser.name;
 
             document.getElementById('profile-name').innerText = currentUser.name;
-            document.getElementById('profile-avatar').innerText = currentUser.name.charAt(0).toUpperCase();
             document.getElementById('profile-role-badge').innerText = currentUser.role + " COBAES 63";
+            document.getElementById('profile-bio').innerText = currentUser.bio || "Sin descripción...";
 
-            // Mostrar botón de admin si el usuario es administrador
+            const avatarImg = document.getElementById('profile-avatar-img');
+            const avatarText = document.getElementById('profile-avatar-text');
+            if (currentUser.avatar) {
+                avatarImg.src = currentUser.avatar;
+                avatarImg.classList.remove('hidden');
+                avatarText.classList.add('hidden');
+            } else {
+                avatarText.innerText = currentUser.name.charAt(0).toUpperCase();
+                avatarImg.classList.add('hidden');
+                avatarText.classList.remove('hidden');
+            }
+
+            // Mostrar redes según privacidad propia en el perfil lateral
+            renderProfileSocials(currentUser);
+
             const adminBtn = document.getElementById('admin-menu-btn');
             if (currentUser.isAdmin) {
                 adminBtn.classList.remove('hidden');
@@ -402,17 +437,19 @@
                 adminBtn.classList.add('hidden');
             }
 
-            let socialsHtml = '';
-            if (currentUser.fb) socialsHtml += `<a href="https://facebook.com/${currentUser.fb}" target="_blank" class="text-blue-600 hover:opacity-80"><i class="fa-brands fa-facebook"></i></a>`;
-            if (currentUser.ig) socialsHtml += `<a href="https://instagram.com/${currentUser.ig.replace('@','')}" target="_blank" class="text-pink-600 hover:opacity-80"><i class="fa-brands fa-instagram"></i></a>`;
-            if (currentUser.tk) socialsHtml += `<a href="https://tiktok.com/@${currentUser.tk.replace('@','')}" target="_blank" class="text-black hover:opacity-80"><i class="fa-brands fa-tiktok"></i></a>`;
-            document.getElementById('profile-socials').innerHTML = socialsHtml || '<span class="text-xs text-gray-400">Sin redes vinculadas</span>';
-
             switchView('feed');
         }
 
+        function renderProfileSocials(user) {
+            let socialsHtml = '';
+            if (user.fb) socialsHtml += `<a href="https://facebook.com/${user.fb}" target="_blank" class="text-blue-600 hover:opacity-80"><i class="fa-brands fa-facebook"></i></a>`;
+            if (user.ig) socialsHtml += `<a href="https://instagram.com/${user.ig.replace('@','')}" target="_blank" class="text-pink-600 hover:opacity-80"><i class="fa-brands fa-instagram"></i></a>`;
+            if (user.tk) socialsHtml += `<a href="https://tiktok.com/@${user.tk.replace('@','')}" target="_blank" class="text-black hover:opacity-80"><i class="fa-brands fa-tiktok"></i></a>`;
+            document.getElementById('profile-socials').innerHTML = socialsHtml || '<span class="text-xs text-gray-400">Sin redes</span>';
+        }
+
         function switchView(viewName) {
-            ['feed', 'inbox', 'admin'].forEach(v => {
+            ['feed', 'friends', 'messages', 'inbox', 'admin'].forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) el.classList.add('hidden');
                 const btn = document.getElementById(`nav-btn-${v}`);
@@ -426,41 +463,205 @@
             }
 
             if (viewName === 'feed') renderPosts();
-            if (viewName === 'inbox') renderMySuggestions();
+            if (viewName === 'friends') renderCommunityUsers();
+            if (viewName === 'messages') renderChatUsers();
             if (viewName === 'admin') renderAdminSuggestions();
         }
 
+        // AMISTADES Y MEJORES AMIGOS
+        function toggleFriend(targetUsername) {
+            const target = users.find(u => u.username === targetUsername);
+            if (!target) return;
+
+            if (currentUser.friends.includes(targetUsername)) {
+                currentUser.friends = currentUser.friends.filter(u => u !== targetUsername);
+                currentUser.bestFriends = currentUser.bestFriends.filter(u => u !== targetUsername);
+            } else {
+                currentUser.friends.push(targetUsername);
+            }
+            updateUserStorage();
+            renderCommunityUsers();
+        }
+
+        function toggleBestFriend(targetUsername) {
+            if (!currentUser.friends.includes(targetUsername)) {
+                alert('Primero debes agregarlo como amigo.');
+                return;
+            }
+
+            if (currentUser.bestFriends.includes(targetUsername)) {
+                currentUser.bestFriends = currentUser.bestFriends.filter(u => u !== targetUsername);
+            } else {
+                currentUser.bestFriends.push(targetUsername);
+            }
+            updateUserStorage();
+            renderCommunityUsers();
+        }
+
+        function updateUserStorage() {
+            const idx = users.findIndex(u => u.username === currentUser.username);
+            if (idx > -1) users[idx] = currentUser;
+            localStorage.setItem('cobaes_users', JSON.stringify(users));
+            localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
+        }
+
+        function renderCommunityUsers() {
+            const list = document.getElementById('community-users-list');
+            const others = users.filter(u => u.username !== currentUser.username);
+
+            list.innerHTML = others.map(u => {
+                const isFriend = currentUser.friends.includes(u.username);
+                const isBestFriend = currentUser.bestFriends.includes(u.username);
+
+                // Validar visibilidad de redes sociales según privacidad del usuario
+                let canSeeSocials = u.socialPrivacy === 'public' || (u.socialPrivacy === 'friends' && u.friends.includes(currentUser.username));
+
+                let socialsDisplay = '';
+                if (canSeeSocials) {
+                    if (u.fb) socialsDisplay += `<a href="https://facebook.com/${u.fb}" target="_blank" class="text-blue-600 text-sm"><i class="fa-brands fa-facebook"></i></a>`;
+                    if (u.ig) socialsDisplay += `<a href="https://instagram.com/${u.ig.replace('@','')}" target="_blank" class="text-pink-600 text-sm"><i class="fa-brands fa-instagram"></i></a>`;
+                    if (u.tk) socialsDisplay += `<a href="https://tiktok.com/@${u.tk.replace('@','')}" target="_blank" class="text-black text-sm"><i class="fa-brands fa-tiktok"></i></a>`;
+                } else {
+                    socialsDisplay = `<span class="text-[10px] text-gray-400 italic">Redes privadas (Solo amigos)</span>`;
+                }
+
+                return `
+                    <div class="bg-gray-50 p-3.5 rounded-2xl border border-gray-200 flex flex-col justify-between space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-cobaesGreen text-white flex items-center justify-center font-bold text-sm overflow-hidden flex-shrink-0">
+                                ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : u.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">${u.name}</h4>
+                                <p class="text-[11px] text-gray-400">${u.role} • ${u.bio || 'Sin descripción'}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-2 pt-1 border-t border-gray-200">
+                            ${socialsDisplay}
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <button onclick="toggleFriend('${u.username}')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${isFriend ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-cobaesGreen text-white hover:bg-cobaesLightGreen'}">
+                                ${isFriend ? 'Eliminar Amigo' : 'Agregar Amigo'}
+                            </button>
+                            ${isFriend ? `
+                                <button onclick="toggleBestFriend('${u.username}')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${isBestFriend ? 'bg-amber-100 text-amber-800' : 'bg-gray-200 text-gray-700'}">
+                                    ${isBestFriend ? '🌟 Mejores Amigos' : '+ Mejor Amigo'}
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // CHAT Y MENSAJERÍA
+        function renderChatUsers() {
+            const list = document.getElementById('chat-users-list');
+            const friendUsers = users.filter(u => currentUser.friends.includes(u.username));
+
+            if (friendUsers.length === 0) {
+                list.innerHTML = `<p class="text-xs text-gray-400 p-2">Aún no tienes amigos agregados para chatear. Ve a la sección "Amigos".</p>`;
+                return;
+            }
+
+            list.innerHTML = friendUsers.map(u => `
+                <button onclick="selectChatUser('${u.username}')" class="w-full text-left p-2.5 rounded-xl hover:bg-white transition flex items-center space-x-2.5 border border-transparent hover:border-gray-200">
+                    <div class="w-8 h-8 rounded-full bg-cobaesGreen text-white flex items-center justify-center font-bold text-xs overflow-hidden">
+                        ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : u.name.charAt(0)}
+                    </div>
+                    <div>
+                        <p class="font-bold text-xs text-gray-800">${u.name}</p>
+                        <p class="text-[10px] text-gray-400">${u.role}</p>
+                    </div>
+                </button>
+            `).join('');
+        }
+
+        function selectChatUser(username) {
+            activeChatUser = users.find(u => u.username === username);
+            document.getElementById('chat-header').innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-cobaesGreen text-white flex items-center justify-center font-bold text-xs overflow-hidden">
+                    ${activeChatUser.avatar ? `<img src="${activeChatUser.avatar}" class="w-full h-full object-cover">` : activeChatUser.name.charAt(0)}
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-gray-800">${activeChatUser.name}</h4>
+                    <p class="text-[10px] text-gray-400">${activeChatUser.role} • COBAES 63</p>
+                </div>
+            `;
+            document.getElementById('chat-form').classList.remove('hidden');
+            renderPrivateMessages();
+        }
+
+        function sendPrivateMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text || !activeChatUser) return;
+
+            messages.push({
+                sender: currentUser.username,
+                receiver: activeChatUser.username,
+                text,
+                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            });
+
+            localStorage.setItem('cobaes_messages', JSON.stringify(messages));
+            input.value = '';
+            renderPrivateMessages();
+        }
+
+        function renderPrivateMessages() {
+            const box = document.getElementById('chat-messages-box');
+            if (!activeChatUser) return;
+
+            const chatHistory = messages.filter(m => 
+                (m.sender === currentUser.username && m.receiver === activeChatUser.username) ||
+                (m.sender === activeChatUser.username && m.receiver === currentUser.username)
+            );
+
+            box.innerHTML = chatHistory.map(m => {
+                const isMe = m.sender === currentUser.username;
+                return `
+                    <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                        <div class="max-w-[75%] px-3 py-2 rounded-2xl text-xs ${isMe ? 'bg-cobaesGreen text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'}">
+                            ${m.text}
+                        </div>
+                        <span class="text-[9px] text-gray-400 mt-1 px-1">${m.timestamp}</span>
+                    </div>
+                `;
+            }).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // PUBLICACIONES Y AUDIENCIA (Público, Amigos, Mejores Amigos)
         function createPost(e) {
             e.preventDefault();
             const text = document.getElementById('post-text').value.trim();
             const media = document.getElementById('post-media-input').value.trim();
             const category = document.getElementById('post-category').value;
+            const audience = document.getElementById('post-audience').value;
 
             if (!text && !media) return;
 
-            let mediaType = "none";
-            if (media) {
-                mediaType = (media.includes('video') || media.endsWith('.mp4')) ? "video" : "image";
-            }
-
-            const newPost = {
+            posts.unshift({
                 id: Date.now(),
                 author: currentUser.name,
                 username: currentUser.username,
                 role: currentUser.role,
-                category: category,
-                text: text,
-                media: media,
-                mediaType: mediaType,
+                category,
+                audience,
+                text,
+                media,
+                mediaType: media ? (media.endsWith('.mp4') ? 'video' : 'image') : 'none',
                 timestamp: "Hace un momento",
                 likes: 0,
                 likedBy: [],
                 comments: []
-            };
+            });
 
-            posts.unshift(newPost);
             localStorage.setItem('cobaes_posts', JSON.stringify(posts));
-
             document.getElementById('post-text').value = '';
             document.getElementById('post-media-input').value = '';
             renderPosts();
@@ -468,30 +669,19 @@
 
         function filterFeed(cat) {
             currentFilter = cat;
-            ['all', 'noticias', 'general'].forEach(c => {
-                const btn = document.getElementById(`filter-${c}`);
-                if (btn) {
-                    if (c === cat) {
-                        btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-cobaesGreen text-white";
-                    } else {
-                        btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-gray-600 border border-gray-200";
-                    }
-                }
-            });
             renderPosts();
         }
 
         function toggleLike(postId) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
-
-            const index = post.likedBy.indexOf(currentUser.username);
-            if (index > -1) {
-                post.likedBy.splice(index, 1);
-                post.likes -= 1;
+            const idx = post.likedBy.indexOf(currentUser.username);
+            if (idx > -1) {
+                post.likedBy.splice(idx, 1);
+                post.likes--;
             } else {
                 post.likedBy.push(currentUser.username);
-                post.likes += 1;
+                post.likes++;
             }
             localStorage.setItem('cobaes_posts', JSON.stringify(posts));
             renderPosts();
@@ -502,13 +692,9 @@
             const input = document.getElementById(`comment-input-${postId}`);
             const text = input.value.trim();
             if (!text) return;
-
             const post = posts.find(p => p.id === postId);
             if (post) {
-                post.comments.push({
-                    author: currentUser.name,
-                    text: text
-                });
+                post.comments.push({ author: currentUser.name, text });
                 localStorage.setItem('cobaes_posts', JSON.stringify(posts));
                 renderPosts();
             }
@@ -518,147 +704,90 @@
             e.preventDefault();
             const subject = document.getElementById('sugg-subject').value.trim();
             const message = document.getElementById('sugg-message').value.trim();
-
-            if (!subject || !message) return;
-
-            const newSugg = {
-                id: Date.now(),
-                author: currentUser.name,
-                role: currentUser.role,
-                subject: subject,
-                message: message,
-                timestamp: "Hace un momento"
-            };
-
-            suggestions.unshift(newSugg);
+            suggestions.unshift({ id: Date.now(), author: currentUser.name, role: currentUser.role, subject, message, timestamp: "Hace un momento" });
             localStorage.setItem('cobaes_suggestions', JSON.stringify(suggestions));
-
             document.getElementById('sugg-subject').value = '';
             document.getElementById('sugg-message').value = '';
-            alert('¡Sugerencia enviada con éxito al panel de administradores!');
-            renderMySuggestions();
-        }
-
-        function renderMySuggestions() {
-            const list = document.getElementById('my-suggestions-list');
-            const mySugg = suggestions.filter(s => s.author === currentUser.name);
-
-            if (mySugg.length === 0) {
-                list.innerHTML = `<p class="text-xs text-gray-400">No has enviado ninguna sugerencia todavía.</p>`;
-                return;
-            }
-
-            list.innerHTML = mySugg.map(s => `
-                <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs space-y-1">
-                    <div class="flex justify-between font-bold text-gray-800">
-                        <span>${s.subject}</span>
-                        <span class="text-gray-400 font-normal">${s.timestamp}</span>
-                    </div>
-                    <p class="text-gray-600">${s.message}</p>
-                </div>
-            `).join('');
+            alert('¡Sugerencia enviada con éxito!');
         }
 
         function renderAdminSuggestions() {
             const list = document.getElementById('admin-suggestions-list');
             document.getElementById('admin-badge-count').innerText = suggestions.length;
-
-            if (suggestions.length === 0) {
-                list.innerHTML = `<p class="text-xs text-gray-400">El buzón de sugerencias está vacío.</p>`;
-                return;
-            }
-
             list.innerHTML = suggestions.map(s => `
-                <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 text-xs space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-cobaesGreen text-sm">${s.author} <span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded-full">${s.role}</span></span>
-                        <span class="text-gray-400">${s.timestamp}</span>
-                    </div>
-                    <p class="font-bold text-gray-800">Asunto: ${s.subject}</p>
-                    <p class="text-gray-700 bg-white p-3 rounded-lg border border-gray-200">${s.message}</p>
+                <div class="p-3 bg-gray-50 rounded-xl border text-xs space-y-1">
+                    <p class="font-bold text-cobaesGreen">${s.author} (${s.role}) - ${s.subject}</p>
+                    <p class="text-gray-700">${s.message}</p>
                 </div>
             `).join('');
         }
 
         function renderPosts() {
             const feed = document.getElementById('posts-feed');
-            let html = '';
+            
+            // Filtrar publicaciones según categoría y permisos de audiencia
+            const visiblePosts = posts.filter(p => {
+                const matchesCat = currentFilter === 'all' || p.category === currentFilter;
+                if (!matchesCat) return false;
 
-            const filtered = posts.filter(p => currentFilter === 'all' || p.category === currentFilter);
+                // El autor siempre ve sus posts
+                if (p.username === currentUser.username) return true;
 
-            if (filtered.length === 0) {
-                feed.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-gray-400 border border-gray-200">No hay publicaciones en esta sección todavía.</div>`;
+                const authorUser = users.find(u => u.username === p.username);
+                const isAuthorFriend = authorUser && authorUser.friends.includes(currentUser.username);
+                const isAuthorBestFriend = authorUser && authorUser.bestFriends.includes(currentUser.username);
+
+                if (p.audience === 'public') return true;
+                if (p.audience === 'friends' && isAuthorFriend) return true;
+                if (p.audience === 'best_friends' && isAuthorBestFriend) return true;
+
+                return false;
+            });
+
+            if (visiblePosts.length === 0) {
+                feed.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-gray-400 border">No hay publicaciones disponibles en esta sección.</div>`;
                 return;
             }
 
-            filtered.forEach(post => {
+            feed.innerHTML = visiblePosts.map(post => {
                 const isLiked = post.likedBy.includes(currentUser.username);
-                const isNews = post.category === 'noticias';
+                let audienceBadge = '';
+                if (post.audience === 'friends') audienceBadge = '<span class="bg-blue-50 text-blue-700 text-[10px] px-2 py-0.5 rounded-full"><i class="fa-solid fa-user-group"></i> Solo Amigos</span>';
+                if (post.audience === 'best_friends') audienceBadge = '<span class="bg-amber-50 text-amber-700 text-[10px] px-2 py-0.5 rounded-full"><i class="fa-solid fa-star"></i> Mejores Amigos</span>';
 
-                html += `
-                    <div class="bg-white rounded-2xl shadow-sm border ${isNews ? 'border-amber-300 ring-1 ring-amber-200' : 'border-gray-200'} overflow-hidden">
+                return `
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                         <div class="p-4 flex items-center justify-between pb-2">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-cobaesGreen text-white font-bold rounded-full flex items-center justify-center text-sm shadow">
+                                <div class="w-10 h-10 bg-cobaesGreen text-white font-bold rounded-full flex items-center justify-center text-sm">
                                     ${post.author.charAt(0)}
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-sm text-gray-800 flex items-center gap-1.5">
-                                        ${post.author}
-                                        <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.2 rounded-full font-semibold">Verificado</span>
+                                    <h4 class="font-bold text-sm text-gray-800 flex items-center gap-2">
+                                        ${post.author} ${audienceBadge}
                                     </h4>
                                     <p class="text-[11px] text-gray-400">${post.role} • ${post.timestamp}</p>
                                 </div>
                             </div>
-                            <div>
-                                ${isNews ? '<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-lg flex items-center gap-1"><i class="fa-solid fa-bullhorn"></i> Noticia Oficial</span>' : '<span class="text-xs text-gray-400">COBAES 63</span>'}
-                            </div>
                         </div>
-
-                        <div class="px-4 py-2 text-sm text-gray-700 whitespace-pre-line">
-                            ${post.text}
-                        </div>
-
-                        ${post.media ? `
-                            <div class="mt-2 bg-black max-h-96 overflow-hidden flex items-center justify-center">
-                                ${post.mediaType === 'video' ? `
-                                    <video src="${post.media}" controls class="w-full object-contain max-h-96"></video>
-                                ` : `
-                                    <img src="${post.media}" alt="Media publicación" class="w-full object-cover max-h-96">
-                                `}
-                            </div>
-                        ` : ''}
-
-                        <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-                            <button onclick="toggleLike(${post.id})" class="flex items-center space-x-1.5 font-semibold ${isLiked ? 'text-red-500' : 'hover:text-cobaesGreen'} transition">
-                                <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart text-base"></i>
-                                <span>${post.likes} Reacciones</span>
+                        <div class="px-4 py-2 text-sm text-gray-700">${post.text}</div>
+                        ${post.media ? `<div class="bg-black max-h-96 flex items-center justify-center"><img src="${post.media}" class="w-full object-cover max-h-96"></div>` : ''}
+                        <div class="px-4 py-3 border-t flex justify-between text-xs text-gray-500">
+                            <button onclick="toggleLike(${post.id})" class="flex items-center space-x-1 ${isLiked ? 'text-red-500 font-bold' : ''}">
+                                <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i> <span>${post.likes} Reacciones</span>
                             </button>
-                            <span class="font-medium">${post.comments.length} Comentarios</span>
+                            <span>${post.comments.length} Comentarios</span>
                         </div>
-
-                        <div class="bg-gray-50 p-4 border-t border-gray-100 space-y-3">
-                            <div class="space-y-2">
-                                ${post.comments.map(c => `
-                                    <div class="bg-white p-2.5 rounded-xl border border-gray-200 text-xs shadow-2xs">
-                                        <span class="font-bold text-cobaesGreen">${c.author}:</span>
-                                        <span class="text-gray-700 ml-1">${c.text}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-
+                        <div class="bg-gray-50 p-4 border-t space-y-2">
+                            ${post.comments.map(c => `<div class="bg-white p-2 rounded-lg border text-xs"><span class="font-bold text-cobaesGreen">${c.author}:</span> ${c.text}</div>`).join('')}
                             <form onsubmit="addComment(${post.id}, event)" class="flex gap-2 pt-1">
-                                <input type="text" id="comment-input-${post.id}" placeholder="Escribe un comentario..." class="flex-grow px-3 py-2 rounded-xl border border-gray-200 text-xs focus:ring-1 focus:ring-cobaesGreen focus:outline-none bg-white">
-                                <button type="submit" class="bg-cobaesGreen hover:bg-cobaesLightGreen text-white px-4 py-2 rounded-xl text-xs font-bold transition">
-                                    Comentar
-                                </button>
+                                <input type="text" id="comment-input-${post.id}" placeholder="Comentar..." class="flex-grow px-3 py-1.5 rounded-lg border text-xs bg-white">
+                                <button type="submit" class="bg-cobaesGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold">Comentar</button>
                             </form>
                         </div>
                     </div>
                 `;
-            });
-
-            feed.innerHTML = html;
+            }).join('');
         }
     </script>
 </body>
