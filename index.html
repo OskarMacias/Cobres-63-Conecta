@@ -32,11 +32,10 @@
                     <h1 class="text-base font-bold text-cobaesGreen leading-tight flex items-center gap-1">
                         COBAES 63 <span class="bg-cobaesGreen text-white text-[9px] px-1.5 py-0.2 rounded-full font-normal">Oficial</span>
                     </h1>
-                    <p class="text-[10px] text-gray-500">Colegio de Bachilleres del Estado de Sinaloa[span_2](start_span)[span_2](end_span)</p>
+                    <p class="text-[10px] text-gray-500">Colegio de Bachilleres del Estado de Sinaloa[span_1](start_span)[span_1](end_span)</p>
                 </div>
             </div>
             <div id="header-user-info" class="hidden flex items-center space-x-3">
-                <!-- CAMPANITA DE NOTIFICACIONES CON CONTADOR ROJO -->
                 <div class="relative">
                     <button onclick="toggleNotifications()" class="relative p-2 text-gray-600 hover:text-cobaesGreen transition">
                         <i class="fa-solid fa-bell text-lg"></i>
@@ -123,14 +122,14 @@
         <!-- FEED SECTION -->
         <div id="feed-container" class="hidden space-y-4">
             
-            <!-- HISTORIAS CON SUBIDA DIRECTA -->
+            <!-- HISTORIAS AGRUPADAS -->
             <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 overflow-x-auto flex space-x-3 items-center">
                 <label class="flex flex-col items-center flex-shrink-0 cursor-pointer">
                     <div class="w-14 h-14 rounded-full border-2 border-dashed border-cobaesGreen flex items-center justify-center bg-green-50 text-cobaesGreen text-lg">
                         <i class="fa-solid fa-plus"></i>
                     </div>
                     <span class="text-[10px] font-bold text-gray-600 mt-1">Mi Historia</span>
-                    <input type="file" accept="image/*" class="hidden" onchange="uploadStoryFromDevice(this)">
+                    <input type="file" accept="image/*" class="hidden" onchange="prepareStoryEdit(this)">
                 </label>
                 <div id="stories-tray" class="flex space-x-3 items-center"></div>
             </div>
@@ -175,18 +174,15 @@
                 <div id="posts-feed" class="space-y-4"></div>
             </div>
 
-            <!-- VISTA 2: PERFIL CON CLIC PARA CAMBIAR FOTO Y NOMBRE REAL -->
+            <!-- VISTA 2: PERFIL -->
             <div id="view-profile" class="hidden space-y-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center">
-                    <!-- FOTO DE PERFIL CLICKEABLE -->
                     <label class="cursor-pointer inline-block relative group mb-2">
                         <div class="w-20 h-20 rounded-full bg-cobaesGreen text-white text-2xl font-bold flex items-center justify-center mx-auto overflow-hidden shadow">
                             <span id="my-prof-avatar-text">U</span>
                             <img id="my-prof-avatar-img" class="w-full h-full object-cover hidden">
                         </div>
-                        <div class="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition text-xs font-bold">
-                            Cambiar
-                        </div>
+                        <div class="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition text-xs font-bold">Cambiar</div>
                         <input type="file" accept="image/*" class="hidden" onchange="uploadProfileAvatarDirect(this)">
                     </label>
                     <h3 id="my-prof-name" class="font-bold text-base text-gray-800">Nombre del usuario</h3>
@@ -219,7 +215,7 @@
                 </div>
             </div>
 
-            <!-- VISTA 3: AMIGOS CON OPCIÓN DE NOTIFICACIONES -->
+            <!-- VISTA 3: AMIGOS -->
             <div id="view-friends" class="hidden space-y-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between gap-3">
@@ -278,6 +274,42 @@
 
     </main>
 
+    <!-- MODAL EDITOR DE HISTORIA -->
+    <div id="story-editor-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-4 space-y-3">
+            <h3 class="font-bold text-sm text-cobaesGreen"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Editar Historia</h3>
+            <div class="relative rounded-xl overflow-hidden bg-black h-64 flex items-center justify-center">
+                <img id="story-edit-preview" class="w-full h-full object-contain">
+                <div id="story-text-overlay" class="absolute bottom-4 left-4 right-4 text-center font-bold text-white drop-shadow-md text-sm px-2"></div>
+            </div>
+            <input type="text" id="story-caption-input" oninput="updateStoryCaptionPreview(this)" placeholder="Agrega un comentario o texto a la foto..." class="w-full px-3 py-2 rounded-xl border text-xs">
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" onclick="closeStoryEditor()" class="px-4 py-2 rounded-xl border text-xs font-bold text-gray-600">Cancelar</button>
+                <button type="button" onclick="publishStory()" class="px-5 py-2 rounded-xl bg-cobaesGreen text-xs font-bold text-white">Publicar Historia</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VISOR DE HISTORIAS -->
+    <div id="story-viewer-modal" class="hidden fixed inset-0 bg-black z-50 flex flex-col justify-between p-4 text-white">
+        <div class="flex justify-between items-center pt-2">
+            <div class="flex items-center space-x-2">
+                <div id="viewer-avatar" class="w-8 h-8 rounded-full bg-cobaesGreen font-bold flex items-center justify-center text-xs">U</div>
+                <span id="viewer-author" class="font-bold text-xs">Usuario</span>
+                <span id="viewer-time" class="text-[10px] text-gray-300">Hace un momento</span>
+            </div>
+            <button onclick="closeStoryViewer()" class="text-white text-xl px-2">✕</button>
+        </div>
+        <div class="flex-grow flex items-center justify-center relative my-2">
+            <img id="viewer-img" class="max-h-[70vh] object-contain rounded-xl">
+            <div id="viewer-caption" class="absolute bottom-6 bg-black bg-opacity-60 px-4 py-2 rounded-xl text-center text-sm font-semibold max-w-xs"></div>
+        </div>
+        <div class="flex justify-between items-center pb-4 px-10">
+            <button onclick="prevStory()" class="bg-white bg-opacity-20 px-3 py-1.5 rounded-xl text-xs font-bold">Anterior</button>
+            <button onclick="nextStory()" class="bg-white bg-opacity-20 px-3 py-1.5 rounded-xl text-xs font-bold">Siguiente</button>
+        </div>
+    </div>
+
     <!-- BARRA DE NAVEGACIÓN INFERIOR -->
     <nav id="bottom-nav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg py-2 px-6 flex justify-around items-center z-50">
         <button onclick="switchView('feed')" id="nav-btn-feed" class="flex flex-col items-center text-cobaesGreen">
@@ -321,6 +353,11 @@
         let activeChatUser = null;
         let currentFilter = 'all';
         let tempPostMediaBase64 = "";
+
+        // Variables de editor y visor de historias
+        let tempStoryMedia = "";
+        let currentViewerStories = [];
+        let viewerIndex = 0;
 
         window.addEventListener('DOMContentLoaded', () => { if (currentUser) showFeedView(); });
 
@@ -412,7 +449,7 @@
             if (viewName === 'admin') renderAdminSuggestions();
         }
 
-        // CARGAR FOTO DIRECTAMENTE DESDE EL PERFIL (CLIC EN EL AVATAR)
+        // CARGAR FOTO DIRECTAMENTE DESDE EL PERFIL
         function uploadProfileAvatarDirect(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -429,45 +466,135 @@
             }
         }
 
-        // HISTORIAS DESDE EL DISPOSITIVO Y NOTIFICAR A AMIGOS CON ALERTA ACTIVADA
-        function uploadStoryFromDevice(input) {
+        // --- SISTEMA DE HISTORIAS MEJORADO ---
+        function prepareStoryEdit(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const newStory = { id: Date.now(), author: currentUser.name, username: currentUser.username, media: e.target.result, timestamp: "Hace un momento" };
-                    stories.unshift(newStory);
-                    localStorage.setItem('cobaes_stories', JSON.stringify(stories));
-                    
-                    // Notificar a amigos que tengan activada la alerta
-                    users.forEach(u => {
-                        if (u.notifyFriends && u.notifyFriends.includes(currentUser.username)) {
-                            // Añadir notificación guardada en localStorage global para ese usuario
-                            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-                            allNotifs.unshift({ id: Date.now(), targetUser: u.username, text: `${currentUser.name} subió una nueva historia 📸`, postId: newStory.id, read: false });
-                            localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
-                        }
-                    });
-
-                    renderStories();
-                    alert('¡Historia subida con éxito!');
+                    tempStoryMedia = e.target.result;
+                    document.getElementById('story-edit-preview').src = tempStoryMedia;
+                    document.getElementById('story-caption-input').value = '';
+                    document.getElementById('story-text-overlay').innerText = '';
+                    document.getElementById('story-editor-modal').classList.remove('hidden');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        function renderStories() {
-            const tray = document.getElementById('stories-tray');
-            tray.innerHTML = stories.map(s => `
-                <div class="flex flex-col items-center flex-shrink-0 cursor-pointer" onclick="alert('Historia de ${s.author}: ${s.timestamp}')">
-                    <div class="w-14 h-14 rounded-full border-2 border-cobaesGreen p-0.5 overflow-hidden shadow">
-                        <img src="${s.media}" class="w-full h-full object-cover rounded-full">
-                    </div>
-                    <span class="text-[10px] font-semibold text-gray-700 mt-1 truncate w-16 text-center">${s.author}</span>
-                </div>
-            `).join('');
+        function updateStoryCaptionPreview(input) {
+            document.getElementById('story-text-overlay').innerText = input.value;
         }
 
-        // NOTIFICACIONES Y CLIC PARA LLEGAR AL CONTENIDO
+        function closeStoryEditor() {
+            document.getElementById('story-editor-modal').classList.add('hidden');
+            tempStoryMedia = "";
+        }
+
+        function publishStory() {
+            const caption = document.getElementById('story-caption-input').value.trim();
+            if (!tempStoryMedia) return;
+
+            const newStory = {
+                id: Date.now(),
+                author: currentUser.name,
+                username: currentUser.username,
+                media: tempStoryMedia,
+                caption: caption,
+                timestamp: "Hace un momento"
+            };
+
+            stories.unshift(newStory);
+            localStorage.setItem('cobaes_stories', JSON.stringify(stories));
+
+            // Notificar a amigos
+            users.forEach(u => {
+                if (u.notifyFriends && u.notifyFriends.includes(currentUser.username)) {
+                    let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+                    allNotifs.unshift({ id: Date.now(), targetUser: u.username, text: `${currentUser.name} subió una nueva historia 📸`, postId: null, read: false });
+                    localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
+                }
+            });
+
+            closeStoryEditor();
+            renderStories();
+            alert('¡Historia publicada con éxito!');
+        }
+
+        // AGRUPAR HISTORIAS POR USUARIO
+        function renderStories() {
+            const tray = document.getElementById('stories-tray');
+            
+            // Agrupar por nombre de autor
+            const grouped = {};
+            stories.forEach(s => {
+                if (!grouped[s.author]) grouped[s.author] = [];
+                grouped[s.author].push(s);
+            });
+
+            const authors = Object.keys(grouped);
+            if (authors.length === 0) {
+                tray.innerHTML = `<span class="text-xs text-gray-400">No hay historias activas.</span>`;
+                return;
+            }
+
+            tray.innerHTML = authors.map(author => {
+                const userStories = grouped[author];
+                const firstStory = userStories[0];
+                return `
+                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer" onclick='openStoryViewer(${JSON.stringify(userStories)})'>
+                        <div class="w-14 h-14 rounded-full border-2 border-cobaesGreen p-0.5 overflow-hidden shadow">
+                            <img src="${firstStory.media}" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <span class="text-[10px] font-semibold text-gray-700 mt-1 truncate w-16 text-center">${author}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // VISOR DE HISTORIAS
+        function openStoryViewer(storiesArray) {
+            currentViewerStories = storiesArray;
+            viewerIndex = 0;
+            document.getElementById('story-viewer-modal').classList.remove('hidden');
+            showCurrentStoryInViewer();
+        }
+
+        function showCurrentStoryInViewer() {
+            const s = currentViewerStories[viewerIndex];
+            document.getElementById('viewer-author').innerText = s.author;
+            document.getElementById('viewer-avatar').innerText = s.author.charAt(0);
+            document.getElementById('viewer-time').innerText = s.timestamp;
+            document.getElementById('viewer-img').src = s.media;
+            const captionBox = document.getElementById('viewer-caption');
+            if (s.caption) {
+                captionBox.innerText = s.caption;
+                captionBox.classList.remove('hidden');
+            } else {
+                captionBox.classList.add('hidden');
+            }
+        }
+
+        function nextStory() {
+            if (viewerIndex < currentViewerStories.length - 1) {
+                viewerIndex++;
+                showCurrentStoryInViewer();
+            } else {
+                closeStoryViewer();
+            }
+        }
+
+        function prevStory() {
+            if (viewerIndex > 0) {
+                viewerIndex--;
+                showCurrentStoryInViewer();
+            }
+        }
+
+        function closeStoryViewer() {
+            document.getElementById('story-viewer-modal').classList.add('hidden');
+        }
+
+        // NOTIFICACIONES
         function toggleNotifications() {
             const dropdown = document.getElementById('notif-dropdown');
             dropdown.classList.toggle('hidden');
@@ -511,6 +638,7 @@
         }
 
         function goToPost(postId) {
+            if (!postId) return;
             document.getElementById('notif-dropdown').classList.add('hidden');
             switchView('feed');
             setTimeout(() => {
@@ -562,7 +690,7 @@
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`¡Mi perfil en COBAES 63 Connect!\nNombre: ${currentUser.name}\nRol: ${currentUser.role}`)}`, '_blank');
         }
 
-        // AMIGOS Y ACTIVAR NOTIFICACIONES DE AMIGOS
+        // AMIGOS
         function toggleFriend(username) {
             currentUser.friends.includes(username) ? currentUser.friends = currentUser.friends.filter(u => u !== username) : currentUser.friends.push(username);
             updateUserStorage();
@@ -614,7 +742,7 @@
 
         function filterCommunityUsers() { renderCommunityUsers(); }
 
-        // CHAT
+        // CHAT Y SOPORTE
         function renderChatUsers() {
             const list = document.getElementById('chat-users-list');
             const friends = users.filter(u => currentUser.friends.includes(u.username));
@@ -645,7 +773,6 @@
             box.innerHTML = history.map(m => `<div class="flex flex-col ${m.sender === currentUser.username ? 'items-end' : 'items-start'}"><div class="px-3 py-1.5 rounded-xl text-xs ${m.sender === currentUser.username ? 'bg-cobaesGreen text-white' : 'bg-gray-100'}">${m.text}</div></div>`).join('');
         }
 
-        // SOPORTE
         function sendSuggestion(e) {
             e.preventDefault();
             const subject = document.getElementById('sugg-subject').value.trim();
@@ -660,7 +787,7 @@
             list.innerHTML = suggestions.map(s => `<div class="p-3 bg-gray-50 rounded-xl border text-xs"><p class="font-bold text-cobaesGreen">${s.author} - ${s.subject}</p><p>${s.message}</p></div>`).join('');
         }
 
-        // PUBLICACIONES Y NOTIFICAR A AMIGOS
+        // PUBLICACIONES
         function previewPostMedia(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -682,7 +809,6 @@
             posts.unshift({ id: newPostId, author: currentUser.name, username: currentUser.username, role: currentUser.role, category, audience, text, media: tempPostMediaBase64, reactions: { like: 0, pride: 0, fire: 0, useful: 0 }, reactedBy: [], comments: [], timestamp: "Hace un momento" });
             localStorage.setItem('cobaes_posts', JSON.stringify(posts));
 
-            // Notificar a amigos que hayan activado notificaciones para este usuario
             users.forEach(u => {
                 if (u.notifyFriends && u.notifyFriends.includes(currentUser.username)) {
                     addNotification(u.username, `${currentUser.name} hizo una nueva publicación 📝`, newPostId);
@@ -706,7 +832,6 @@
                 post.reactedBy.push(currentUser.username);
                 localStorage.setItem('cobaes_posts', JSON.stringify(posts));
                 
-                // Notificar al autor del post
                 const authorUser = users.find(u => u.name === post.author);
                 if (authorUser && authorUser.username !== currentUser.username) {
                     addNotification(authorUser.username, `A ${currentUser.name} le gustó tu publicación ❤️`, post.id);
