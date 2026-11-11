@@ -171,7 +171,7 @@
                             <textarea id="post-text" rows="2" placeholder="¿Qué pasa en COBAES 63 Villa Juárez hoy?" class="w-full p-3 rounded-xl border border-gray-200 focus:outline-none text-sm resize-none"></textarea>
                             
                             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100">
-                                <div class="flex gap-2">
+                                <div class="flex flex-wrap gap-2 items-center">
                                     <select id="post-category" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs font-semibold rounded-lg px-3 py-2">
                                         <option value="general">Estado / Social</option>
                                         <option value="noticias">Noticia Oficial / Plantel</option>
@@ -181,12 +181,19 @@
                                         <option value="friends">Solo Amigos</option>
                                         <option value="best_friends">Mejores Amigos 🌟</option>
                                     </select>
+                                    <label class="cursor-pointer bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-bold px-3 py-2 rounded-lg border border-gray-200 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-image text-green-600"></i> Subir Foto
+                                        <input type="file" id="post-media-file" accept="image/*" class="hidden" onchange="previewPostMedia(this)">
+                                    </label>
                                 </div>
                                 <button type="submit" class="bg-cobaesGreen hover:bg-cobaesLightGreen text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow">
                                     Publicar
                                 </button>
                             </div>
-                            <input type="text" id="post-media-input" placeholder="Enlace de imagen o video (ej. https://...)" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs">
+                            <div id="post-media-preview-container" class="hidden relative mt-2 w-24 h-24 rounded-xl overflow-hidden border">
+                                <img id="post-media-preview" class="w-full h-full object-cover">
+                                <button type="button" onclick="clearPostMedia()" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">×</button>
+                            </div>
                         </form>
                     </div>
 
@@ -199,19 +206,19 @@
                     <div id="posts-feed" class="space-y-4"></div>
                 </div>
 
-                <!-- VISTA 2: CONFIGURACIÓN DE PERFIL Y ÁLBUMES -->
+                <!-- VISTA 2: CONFIGURACIÓN DE PERFIL Y FOTO DIRECTA -->
                 <div id="view-profile" class="hidden space-y-4">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                         <h3 class="font-bold text-lg text-cobaesGreen mb-3"><i class="fa-solid fa-user-gear mr-2"></i> Configuración de Perfil</h3>
-                        <form onsubmit="updateProfile(event)" class="space-y-3">
+                        <form onsubmit="updateProfile(event)" class="space-y-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nombre Completo</label>
                                     <input type="text" id="edit-name" required class="w-full px-3 py-2 rounded-xl border text-sm">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Enlace Foto de Perfil</label>
-                                    <input type="url" id="edit-avatar" class="w-full px-3 py-2 rounded-xl border text-sm" placeholder="https://...">
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Foto de Perfil (Subir Directo)</label>
+                                    <input type="file" id="edit-avatar-file" accept="image/*" class="w-full px-3 py-1.5 rounded-xl border text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cobaesGreen file:text-white hover:file:bg-cobaesLightGreen">
                                 </div>
                             </div>
                             <div>
@@ -234,12 +241,10 @@
                         </form>
                     </div>
 
-                    <!-- Álbum de Fotos del Usuario -->
+                    <!-- Álbum de Fotos -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                         <h3 class="font-bold text-base text-cobaesGreen mb-3"><i class="fa-solid fa-images mr-2"></i> Mi Álbum de Fotos Publicadas</h3>
-                        <div id="user-photo-album" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            <!-- Se llena dinámicamente -->
-                        </div>
+                        <div id="user-photo-album" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
                     </div>
                 </div>
 
@@ -269,18 +274,18 @@
                     </div>
                 </div>
 
-                <!-- VISTA 5: SOPORTE / SUGERENCIAS CON ADJUNTAR ARCHIVOS -->
+                <!-- VISTA 5: SOPORTE / SUGERENCIAS CON ARCHIVOS DIRECTOS -->
                 <div id="view-inbox" class="hidden space-y-4">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                         <h3 class="font-bold text-lg text-cobaesGreen mb-1"><i class="fa-solid fa-life-ring mr-2"></i> Buzón de Soporte y Sugerencias</h3>
-                        <p class="text-xs text-gray-500 mb-4">Envía tus sugerencias, reportes de errores o adjunta archivos (capturas de pantalla) para los administradores.</p>
+                        <p class="text-xs text-gray-500 mb-4">Envía tus sugerencias o adjunta una captura de pantalla directamente desde tu dispositivo.</p>
                         
                         <form onsubmit="sendSuggestion(event)" class="space-y-3">
                             <input type="text" id="sugg-subject" required class="w-full px-3 py-2 rounded-xl border text-sm" placeholder="Asunto / Motivo">
-                            <textarea id="sugg-message" rows="3" required class="w-full p-3 rounded-xl border text-sm" placeholder="Explícanos tu sugerencia o describe el error..."></textarea>
+                            <textarea id="sugg-message" rows="3" required class="w-full p-3 rounded-xl border text-sm" placeholder="Explícanos tu sugerencia o error..."></textarea>
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Adjuntar Archivo / Captura (Enlace URL)</label>
-                                <input type="url" id="sugg-file" class="w-full px-3.5 py-2 rounded-xl border text-xs" placeholder="https://... (Enlace de imagen o archivo de soporte)">
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Adjuntar Archivo o Captura</label>
+                                <input type="file" id="sugg-file-input" accept="image/*" class="w-full px-3 py-1.5 rounded-xl border text-xs bg-gray-50">
                             </div>
                             <button type="submit" class="bg-cobaesGreen text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow">Enviar al Administrador</button>
                         </form>
@@ -328,6 +333,7 @@
         let messages = JSON.parse(localStorage.getItem('cobaes_messages')) || [];
         let activeChatUser = null;
         let currentFilter = 'all';
+        let tempPostMediaBase64 = "";
 
         window.addEventListener('DOMContentLoaded', () => {
             if (currentUser) {
@@ -465,15 +471,15 @@
             if (viewName === 'admin') renderAdminSuggestions();
         }
 
-        // CONFIGURACIÓN Y ÁLBUMES DE PERFIL
+        // CONFIGURACIÓN Y ÁLBUMES DE PERFIL CON CARGA DE ARCHIVO DIRECTA
         function loadProfileSettings() {
             document.getElementById('edit-name').value = currentUser.name;
-            document.getElementById('edit-avatar').value = currentUser.avatar || '';
             document.getElementById('edit-bio').value = currentUser.bio || '';
             document.getElementById('edit-social-privacy').value = currentUser.socialPrivacy || 'public';
             document.getElementById('edit-fb').value = currentUser.fb || '';
             document.getElementById('edit-ig').value = currentUser.ig || '';
             document.getElementById('edit-tk').value = currentUser.tk || '';
+            document.getElementById('edit-avatar-file').value = '';
 
             renderUserPhotoAlbum();
         }
@@ -481,13 +487,26 @@
         function updateProfile(e) {
             e.preventDefault();
             currentUser.name = document.getElementById('edit-name').value.trim();
-            currentUser.avatar = document.getElementById('edit-avatar').value.trim();
             currentUser.bio = document.getElementById('edit-bio').value.trim();
             currentUser.socialPrivacy = document.getElementById('edit-social-privacy').value;
             currentUser.fb = document.getElementById('edit-fb').value.trim();
             currentUser.ig = document.getElementById('edit-ig').value.trim();
             currentUser.tk = document.getElementById('edit-tk').value.trim();
 
+            const avatarFile = document.getElementById('edit-avatar-file').files[0];
+            if (avatarFile) {
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    currentUser.avatar = uploadEvent.target.result;
+                    saveProfileFinal();
+                };
+                reader.readAsDataURL(avatarFile);
+            } else {
+                saveProfileFinal();
+            }
+        }
+
+        function saveProfileFinal() {
             const idx = users.findIndex(u => u.username === currentUser.username);
             if (idx > -1) users[idx] = currentUser;
             localStorage.setItem('cobaes_users', JSON.stringify(users));
@@ -499,7 +518,7 @@
 
         function renderUserPhotoAlbum() {
             const albumContainer = document.getElementById('user-photo-album');
-            const userPostsWithMedia = posts.filter(p => p.username === currentUser.username && p.media && p.mediaType === 'image');
+            const userPostsWithMedia = posts.filter(p => p.username === currentUser.username && p.media);
 
             if (userPostsWithMedia.length === 0) {
                 albumContainer.innerHTML = `<p class="text-xs text-gray-400 col-span-3">Aún no has subido fotos en tus publicaciones.</p>`;
@@ -513,11 +532,29 @@
             `).join('');
         }
 
+        // PREVIEW DE FOTO EN PUBLICACIÓN
+        function previewPostMedia(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempPostMediaBase64 = e.target.result;
+                    document.getElementById('post-media-preview').src = tempPostMediaBase64;
+                    document.getElementById('post-media-preview-container').classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function clearPostMedia() {
+            tempPostMediaBase64 = "";
+            document.getElementById('post-media-file').value = "";
+            document.getElementById('post-media-preview-container').classList.add('hidden');
+        }
+
         // AMIGOS
         function toggleFriend(targetUsername) {
             const target = users.find(u => u.username === targetUsername);
             if (!target) return;
-
             if (currentUser.friends.includes(targetUsername)) {
                 currentUser.friends = currentUser.friends.filter(u => u !== targetUsername);
             } else {
@@ -537,7 +574,6 @@
         function renderCommunityUsers() {
             const list = document.getElementById('community-users-list');
             const others = users.filter(u => u.username !== currentUser.username);
-
             list.innerHTML = others.map(u => {
                 const isFriend = currentUser.friends.includes(u.username);
                 return `
@@ -600,18 +636,30 @@
             `).join('');
         }
 
-        // SOPORTE CON ARCHIVOS
+        // SOPORTE CON ARCHIVOS DIRECTOS
         function sendSuggestion(e) {
             e.preventDefault();
             const subject = document.getElementById('sugg-subject').value.trim();
             const message = document.getElementById('sugg-message').value.trim();
-            const file = document.getElementById('sugg-file').value.trim();
+            const fileInput = document.getElementById('sugg-file-input');
 
-            suggestions.unshift({ id: Date.now(), author: currentUser.name, role: currentUser.role, subject, message, file, timestamp: "Hace un momento" });
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveSuggestionFinal(subject, message, e.target.result);
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                saveSuggestionFinal(subject, message, "");
+            }
+        }
+
+        function saveSuggestionFinal(subject, message, fileData) {
+            suggestions.unshift({ id: Date.now(), author: currentUser.name, role: currentUser.role, subject, message, file: fileData, timestamp: "Hace un momento" });
             localStorage.setItem('cobaes_suggestions', JSON.stringify(suggestions));
             document.getElementById('sugg-subject').value = '';
             document.getElementById('sugg-message').value = '';
-            document.getElementById('sugg-file').value = '';
+            document.getElementById('sugg-file-input').value = '';
             alert('¡Sugerencia y archivo enviados con éxito!');
             renderMySuggestions();
         }
@@ -627,7 +675,7 @@
                 <div class="p-3 bg-gray-50 rounded-xl border text-xs space-y-1">
                     <p class="font-bold">${s.subject}</p>
                     <p>${s.message}</p>
-                    ${s.file ? `<a href="${s.file}" target="_blank" class="text-blue-600 underline block mt-1"><i class="fa-solid fa-paperclip"></i> Ver archivo adjunto</a>` : ''}
+                    ${s.file ? `<img src="${s.file}" class="w-20 h-20 object-cover rounded-lg mt-1 border">` : ''}
                 </div>
             `).join('');
         }
@@ -639,7 +687,7 @@
                 <div class="p-3 bg-gray-50 rounded-xl border text-xs space-y-1">
                     <p class="font-bold text-cobaesGreen">${s.author} (${s.role}) - ${s.subject}</p>
                     <p>${s.message}</p>
-                    ${s.file ? `<a href="${s.file}" target="_blank" class="text-blue-600 underline block mt-1"><i class="fa-solid fa-paperclip"></i> Ver archivo adjunto</a>` : ''}
+                    ${s.file ? `<img src="${s.file}" class="w-24 h-24 object-cover rounded-lg mt-1 border">` : ''}
                 </div>
             `).join('');
         }
@@ -648,11 +696,10 @@
         function createPost(e) {
             e.preventDefault();
             const text = document.getElementById('post-text').value.trim();
-            const media = document.getElementById('post-media-input').value.trim();
             const category = document.getElementById('post-category').value;
             const audience = document.getElementById('post-audience').value;
 
-            if (!text && !media) return;
+            if (!text && !tempPostMediaBase64) return;
 
             posts.unshift({
                 id: Date.now(),
@@ -662,8 +709,7 @@
                 category,
                 audience,
                 text,
-                media,
-                mediaType: media ? 'image' : 'none',
+                media: tempPostMediaBase64,
                 timestamp: "Hace un momento",
                 likes: 0,
                 likedBy: [],
@@ -672,7 +718,7 @@
 
             localStorage.setItem('cobaes_posts', JSON.stringify(posts));
             document.getElementById('post-text').value = '';
-            document.getElementById('post-media-input').value = '';
+            clearPostMedia();
             renderPosts();
         }
 
