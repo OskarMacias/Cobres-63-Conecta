@@ -32,7 +32,7 @@
                     <h1 class="text-base font-bold text-cobaesGreen leading-tight flex items-center gap-1">
                         COBAES 63 <span class="bg-cobaesGreen text-white text-[9px] px-1.5 py-0.2 rounded-full font-normal">Oficial</span>
                     </h1>
-                    <p class="text-[10px] text-gray-500">Colegio de Bachilleres del Estado de Sinaloa[span_1](start_span)[span_1](end_span)</p>
+                    <p class="text-[10px] text-gray-500">Colegio de Bachilleres del Estado de Sinaloa[span_0](start_span)[span_0](end_span)</p>
                 </div>
             </div>
             <div id="header-user-info" class="hidden flex items-center space-x-3">
@@ -310,6 +310,41 @@
         </div>
     </div>
 
+    <!-- MODAL VISOR DE FOTO AMPLIADA -->
+    <div id="photo-lightbox-modal" class="hidden fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col md:flex-row overflow-y-auto">
+        <div class="w-full md:w-2/3 h-[50vh] md:h-full flex items-center justify-center relative bg-black p-4">
+            <button onclick="closeLightbox()" class="absolute top-4 left-4 text-white text-xl bg-black bg-opacity-50 w-10 h-10 rounded-full flex items-center justify-center hover:bg-opacity-80 transition z-10"><i class="fa-solid fa-arrow-left"></i></button>
+            <img id="lightbox-img" class="max-h-full max-w-full object-contain">
+        </div>
+        <div class="w-full md:w-1/3 bg-white flex flex-col justify-between p-4 min-h-[50vh] md:min-h-screen">
+            <div class="space-y-4">
+                <div class="flex items-center justify-between border-b pb-3">
+                    <div class="flex items-center space-x-3">
+                        <div id="lightbox-avatar" class="w-10 h-10 bg-cobaesGreen text-white font-bold rounded-full flex items-center justify-center text-sm">U</div>
+                        <div>
+                            <h4 id="lightbox-author" class="font-bold text-sm text-gray-800">Autor</h4>
+                            <p id="lightbox-time" class="text-[10px] text-gray-400">Hace un momento</p>
+                        </div>
+                    </div>
+                    <button onclick="closeLightbox()" class="text-gray-500 hover:text-black text-lg font-bold md:hidden">✕</button>
+                </div>
+                <div id="lightbox-text" class="text-sm text-gray-700"></div>
+                <div class="border-t pt-2">
+                    <p class="text-xs font-bold text-gray-500 mb-2">Reacciones</p>
+                    <div id="lightbox-reactions" class="flex flex-wrap gap-2 text-xs"></div>
+                </div>
+                <div class="border-t pt-2">
+                    <p class="text-xs font-bold text-gray-500 mb-2">Comentarios</p>
+                    <div id="lightbox-comments-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
+                </div>
+            </div>
+            <form id="lightbox-comment-form" onsubmit="submitLightboxComment(event)" class="pt-3 border-t flex gap-2 mt-4">
+                <input type="text" id="lightbox-comment-input" placeholder="Escribe un comentario..." class="flex-grow px-3 py-2 rounded-xl border text-xs focus:outline-none">
+                <button type="submit" class="bg-cobaesGreen text-white px-4 py-2 rounded-xl text-xs font-bold">Comentar</button>
+            </form>
+        </div>
+    </div>
+
     <!-- BARRA DE NAVEGACIÓN INFERIOR -->
     <nav id="bottom-nav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg py-2 px-6 flex justify-around items-center z-50">
         <button onclick="switchView('feed')" id="nav-btn-feed" class="flex flex-col items-center text-cobaesGreen">
@@ -354,10 +389,10 @@
         let currentFilter = 'all';
         let tempPostMediaBase64 = "";
 
-        // Variables de editor y visor de historias
         let tempStoryMedia = "";
         let currentViewerStories = [];
         let viewerIndex = 0;
+        let currentLightboxPostId = null;
 
         window.addEventListener('DOMContentLoaded', () => { if (currentUser) showFeedView(); });
 
@@ -420,8 +455,15 @@
 
             const avImg = document.getElementById('my-prof-avatar-img');
             const avTxt = document.getElementById('my-prof-avatar-text');
-            if (currentUser.avatar) { avImg.src = currentUser.avatar; avImg.classList.remove('hidden'); avTxt.classList.add('hidden'); }
-            else { avTxt.innerText = currentUser.name.charAt(0); avImg.classList.add('hidden'); avTxt.classList.remove('hidden'); }
+            if (currentUser.avatar) {
+                avImg.src = currentUser.avatar;
+                avImg.classList.remove('hidden');
+                avTxt.classList.add('hidden');
+            } else {
+                avTxt.innerText = currentUser.name.charAt(0);
+                avImg.classList.add('hidden');
+                avTxt.classList.remove('hidden');
+            }
 
             const adminBtn = document.getElementById('admin-menu-btn');
             if (currentUser.isAdmin) { adminBtn.classList.remove('hidden'); } else { adminBtn.classList.add('hidden'); }
@@ -449,7 +491,7 @@
             if (viewName === 'admin') renderAdminSuggestions();
         }
 
-        // CARGAR FOTO DIRECTAMENTE DESDE EL PERFIL
+        // CARGAR FOTO DIRECTAMENTE DESDE EL AVATAR DE PERFIL
         function uploadProfileAvatarDirect(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -466,192 +508,7 @@
             }
         }
 
-        // --- SISTEMA DE HISTORIAS MEJORADO ---
-        function prepareStoryEdit(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    tempStoryMedia = e.target.result;
-                    document.getElementById('story-edit-preview').src = tempStoryMedia;
-                    document.getElementById('story-caption-input').value = '';
-                    document.getElementById('story-text-overlay').innerText = '';
-                    document.getElementById('story-editor-modal').classList.remove('hidden');
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function updateStoryCaptionPreview(input) {
-            document.getElementById('story-text-overlay').innerText = input.value;
-        }
-
-        function closeStoryEditor() {
-            document.getElementById('story-editor-modal').classList.add('hidden');
-            tempStoryMedia = "";
-        }
-
-        function publishStory() {
-            const caption = document.getElementById('story-caption-input').value.trim();
-            if (!tempStoryMedia) return;
-
-            const newStory = {
-                id: Date.now(),
-                author: currentUser.name,
-                username: currentUser.username,
-                media: tempStoryMedia,
-                caption: caption,
-                timestamp: "Hace un momento"
-            };
-
-            stories.unshift(newStory);
-            localStorage.setItem('cobaes_stories', JSON.stringify(stories));
-
-            // Notificar a amigos
-            users.forEach(u => {
-                if (u.notifyFriends && u.notifyFriends.includes(currentUser.username)) {
-                    let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-                    allNotifs.unshift({ id: Date.now(), targetUser: u.username, text: `${currentUser.name} subió una nueva historia 📸`, postId: null, read: false });
-                    localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
-                }
-            });
-
-            closeStoryEditor();
-            renderStories();
-            alert('¡Historia publicada con éxito!');
-        }
-
-        // AGRUPAR HISTORIAS POR USUARIO
-        function renderStories() {
-            const tray = document.getElementById('stories-tray');
-            
-            // Agrupar por nombre de autor
-            const grouped = {};
-            stories.forEach(s => {
-                if (!grouped[s.author]) grouped[s.author] = [];
-                grouped[s.author].push(s);
-            });
-
-            const authors = Object.keys(grouped);
-            if (authors.length === 0) {
-                tray.innerHTML = `<span class="text-xs text-gray-400">No hay historias activas.</span>`;
-                return;
-            }
-
-            tray.innerHTML = authors.map(author => {
-                const userStories = grouped[author];
-                const firstStory = userStories[0];
-                return `
-                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer" onclick='openStoryViewer(${JSON.stringify(userStories)})'>
-                        <div class="w-14 h-14 rounded-full border-2 border-cobaesGreen p-0.5 overflow-hidden shadow">
-                            <img src="${firstStory.media}" class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <span class="text-[10px] font-semibold text-gray-700 mt-1 truncate w-16 text-center">${author}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // VISOR DE HISTORIAS
-        function openStoryViewer(storiesArray) {
-            currentViewerStories = storiesArray;
-            viewerIndex = 0;
-            document.getElementById('story-viewer-modal').classList.remove('hidden');
-            showCurrentStoryInViewer();
-        }
-
-        function showCurrentStoryInViewer() {
-            const s = currentViewerStories[viewerIndex];
-            document.getElementById('viewer-author').innerText = s.author;
-            document.getElementById('viewer-avatar').innerText = s.author.charAt(0);
-            document.getElementById('viewer-time').innerText = s.timestamp;
-            document.getElementById('viewer-img').src = s.media;
-            const captionBox = document.getElementById('viewer-caption');
-            if (s.caption) {
-                captionBox.innerText = s.caption;
-                captionBox.classList.remove('hidden');
-            } else {
-                captionBox.classList.add('hidden');
-            }
-        }
-
-        function nextStory() {
-            if (viewerIndex < currentViewerStories.length - 1) {
-                viewerIndex++;
-                showCurrentStoryInViewer();
-            } else {
-                closeStoryViewer();
-            }
-        }
-
-        function prevStory() {
-            if (viewerIndex > 0) {
-                viewerIndex--;
-                showCurrentStoryInViewer();
-            }
-        }
-
-        function closeStoryViewer() {
-            document.getElementById('story-viewer-modal').classList.add('hidden');
-        }
-
-        // NOTIFICACIONES
-        function toggleNotifications() {
-            const dropdown = document.getElementById('notif-dropdown');
-            dropdown.classList.toggle('hidden');
-            renderNotificationsList();
-        }
-
-        function addNotification(targetUsername, text, postId) {
-            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-            allNotifs.unshift({ id: Date.now(), targetUser: targetUsername, text, postId, read: false });
-            localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
-            renderNotificationsBadge();
-        }
-
-        function renderNotificationsBadge() {
-            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-            const userNotifs = allNotifs.filter(n => n.targetUser === currentUser.username && !n.read);
-            const badge = document.getElementById('notif-badge');
-            if (userNotifs.length > 0) { badge.innerText = userNotifs.length; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
-        }
-
-        function renderNotificationsList() {
-            const list = document.getElementById('notif-list');
-            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-            const userNotifs = allNotifs.filter(n => n.targetUser === currentUser.username);
-
-            if (userNotifs.length === 0) { list.innerHTML = `<p class="text-gray-400 text-center py-2">Sin notificaciones</p>`; return; }
-            
-            list.innerHTML = userNotifs.map(n => `
-                <div onclick="goToPost(${n.postId})" class="p-2 bg-gray-50 rounded-lg border cursor-pointer hover:bg-gray-100 transition ${n.read ? 'opacity-60' : 'font-bold'}">
-                    ${n.text}
-                </div>
-            `).join('');
-        }
-
-        function clearNotifications() {
-            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-            allNotifs.forEach(n => { if (n.targetUser === currentUser.username) n.read = true; });
-            localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
-            renderNotificationsBadge();
-            renderNotificationsList();
-        }
-
-        function goToPost(postId) {
-            if (!postId) return;
-            document.getElementById('notif-dropdown').classList.add('hidden');
-            switchView('feed');
-            setTimeout(() => {
-                const el = document.getElementById(`post-card-${postId}`);
-                if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    el.classList.add('ring-4', 'ring-cobaesGreen');
-                    setTimeout(() => el.classList.remove('ring-4', 'ring-cobaesGreen'), 2000);
-                }
-            }, 100);
-        }
-
-        // PERFIL
+        // ACTUALIZAR INFORMACIÓN Y NOMBRE DESDE EL FORMULARIO
         function loadProfileSettings() {
             document.getElementById('edit-name').value = currentUser.name;
             document.getElementById('edit-bio').value = currentUser.bio || '';
@@ -675,8 +532,143 @@
             if (idx > -1) users[idx] = currentUser;
             localStorage.setItem('cobaes_users', JSON.stringify(users));
             localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
-            alert('¡Perfil actualizado!');
+            
+            alert('¡Perfil actualizado con éxito!');
             showFeedView();
+        }
+
+        // HISTORIAS
+        function prepareStoryEdit(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempStoryMedia = e.target.result;
+                    document.getElementById('story-edit-preview').src = tempStoryMedia;
+                    document.getElementById('story-caption-input').value = '';
+                    document.getElementById('story-text-overlay').innerText = '';
+                    document.getElementById('story-editor-modal').classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function updateStoryCaptionPreview(input) { document.getElementById('story-text-overlay').innerText = input.value; }
+        function closeStoryEditor() { document.getElementById('story-editor-modal').classList.add('hidden'); tempStoryMedia = ""; }
+
+        function publishStory() {
+            const caption = document.getElementById('story-caption-input').value.trim();
+            if (!tempStoryMedia) return;
+            const newStory = { id: Date.now(), author: currentUser.name, username: currentUser.username, media: tempStoryMedia, caption: caption, timestamp: "Hace un momento" };
+            stories.unshift(newStory);
+            localStorage.setItem('cobaes_stories', JSON.stringify(stories));
+            closeStoryEditor();
+            renderStories();
+            alert('¡Historia publicada con éxito!');
+        }
+
+        function renderStories() {
+            const tray = document.getElementById('stories-tray');
+            const grouped = {};
+            stories.forEach(s => {
+                if (!grouped[s.author]) grouped[s.author] = [];
+                grouped[s.author].push(s);
+            });
+            const authors = Object.keys(grouped);
+            if (authors.length === 0) { tray.innerHTML = `<span class="text-xs text-gray-400">No hay historias activas.</span>`; return; }
+            tray.innerHTML = authors.map(author => {
+                const userStories = grouped[author];
+                return `
+                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer" onclick='openStoryViewer(${JSON.stringify(userStories)})'>
+                        <div class="w-14 h-14 rounded-full border-2 border-cobaesGreen p-0.5 overflow-hidden shadow">
+                            <img src="${userStories[0].media}" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <span class="text-[10px] font-semibold text-gray-700 mt-1 truncate w-16 text-center">${author}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openStoryViewer(arr) { currentViewerStories = arr; viewerIndex = 0; document.getElementById('story-viewer-modal').classList.remove('hidden'); showCurrentStoryInViewer(); }
+        function showCurrentStoryInViewer() {
+            const s = currentViewerStories[viewerIndex];
+            document.getElementById('viewer-author').innerText = s.author;
+            document.getElementById('viewer-avatar').innerText = s.author.charAt(0);
+            document.getElementById('viewer-time').innerText = s.timestamp;
+            document.getElementById('viewer-img').src = s.media;
+            const cap = document.getElementById('viewer-caption');
+            if (s.caption) { cap.innerText = s.caption; cap.classList.remove('hidden'); } else { cap.classList.add('hidden'); }
+        }
+        function nextStory() { if (viewerIndex < currentViewerStories.length - 1) { viewerIndex++; showCurrentStoryInViewer(); } else { closeStoryViewer(); } }
+        function prevStory() { if (viewerIndex > 0) { viewerIndex--; showCurrentStoryInViewer(); } }
+        function closeStoryViewer() { document.getElementById('story-viewer-modal').classList.add('hidden'); }
+
+        // LIGHTBOX FOTO AMPLIADA
+        function openLightbox(postId) {
+            currentLightboxPostId = postId;
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            document.getElementById('lightbox-img').src = post.media;
+            document.getElementById('lightbox-author').innerText = post.author;
+            document.getElementById('lightbox-avatar').innerText = post.author.charAt(0);
+            document.getElementById('lightbox-time').innerText = post.timestamp;
+            document.getElementById('lightbox-text').innerText = post.text;
+
+            renderLightboxDetails();
+            document.getElementById('photo-lightbox-modal').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('photo-lightbox-modal').classList.add('hidden');
+            currentLightboxPostId = null;
+            renderPosts();
+        }
+
+        function renderLightboxDetails() {
+            const post = posts.find(p => p.id === currentLightboxPostId);
+            if (!post) return;
+
+            document.getElementById('lightbox-reactions').innerHTML = `
+                <button onclick="reactPostLightbox(${post.id}, 'like')" class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg border font-semibold">👍 ${post.reactions.like || 0}</button>
+                <button onclick="reactPostLightbox(${post.id}, 'pride')" class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg border font-semibold">🏫 Orgullo (${post.reactions.pride || 0})</button>
+                <button onclick="reactPostLightbox(${post.id}, 'fire')" class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg border font-semibold">🔥 Ambiente (${post.reactions.fire || 0})</button>
+                <button onclick="reactPostLightbox(${post.id}, 'useful')" class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg border font-semibold">📚 Útil (${post.reactions.useful || 0})</button>
+            `;
+
+            const comList = document.getElementById('lightbox-comments-list');
+            if (post.comments.length === 0) {
+                comList.innerHTML = `<p class="text-xs text-gray-400">Sin comentarios aún.</p>`;
+            } else {
+                comList.innerHTML = post.comments.map(c => `
+                    <div class="bg-gray-50 p-2.5 rounded-xl border text-xs">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-cobaesGreen">${c.author}</span>
+                            <span class="text-[9px] text-gray-400">${c.timestamp || 'Hace un momento'}</span>
+                        </div>
+                        <p>${c.text}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function reactPostLightbox(postId, type) {
+            reactPost(postId, type);
+            renderLightboxDetails();
+        }
+
+        function submitLightboxComment(e) {
+            e.preventDefault();
+            const input = document.getElementById('lightbox-comment-input');
+            const text = input.value.trim();
+            if (!text || !currentLightboxPostId) return;
+
+            const post = posts.find(p => p.id === currentLightboxPostId);
+            if (post) {
+                post.comments.push({ author: currentUser.name, text, timestamp: "Hace un momento" });
+                localStorage.setItem('cobaes_posts', JSON.stringify(posts));
+                input.value = '';
+                renderLightboxDetails();
+            }
         }
 
         function renderUserPhotoAlbum() {
@@ -686,60 +678,79 @@
             album.innerHTML = myMedia.map(p => `<div class="rounded-xl overflow-hidden border h-24"><img src="${p.media}" class="w-full h-full object-cover"></div>`).join('');
         }
 
-        function shareMyProfileWhatsApp() {
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`¡Mi perfil en COBAES 63 Connect!\nNombre: ${currentUser.name}\nRol: ${currentUser.role}`)}`, '_blank');
+        function shareMyProfileWhatsApp() { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`¡Mi perfil en COBAES 63 Connect!\nNombre: ${currentUser.name}\nRol: ${currentUser.role}`)}`, '_blank'); }
+
+        // NOTIFICACIONES
+        function toggleNotifications() { document.getElementById('notif-dropdown').classList.toggle('hidden'); renderNotificationsList(); }
+        function addNotification(targetUsername, text, postId) {
+            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+            allNotifs.unshift({ id: Date.now(), targetUser: targetUsername, text, postId, read: false });
+            localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
+            renderNotificationsBadge();
+        }
+        function renderNotificationsBadge() {
+            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+            const userNotifs = allNotifs.filter(n => n.targetUser === currentUser.username && !n.read);
+            const badge = document.getElementById('notif-badge');
+            if (userNotifs.length > 0) { badge.innerText = userNotifs.length; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+        }
+        function renderNotificationsList() {
+            const list = document.getElementById('notif-list');
+            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+            const userNotifs = allNotifs.filter(n => n.targetUser === currentUser.username);
+            if (userNotifs.length === 0) { list.innerHTML = `<p class="text-gray-400 text-center py-2">Sin notificaciones</p>`; return; }
+            list.innerHTML = userNotifs.map(n => `<div onclick="goToPost(${n.postId})" class="p-2 bg-gray-50 rounded-lg border cursor-pointer hover:bg-gray-100 transition ${n.read ? 'opacity-60' : 'font-bold'}">${n.text}</div>`).join('');
+        }
+        function clearNotifications() {
+            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+            allNotifs.forEach(n => { if (n.targetUser === currentUser.username) n.read = true; });
+            localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
+            renderNotificationsBadge(); renderNotificationsList();
+        }
+        function goToPost(postId) {
+            if (!postId) return;
+            document.getElementById('notif-dropdown').classList.add('hidden');
+            switchView('feed');
+            setTimeout(() => {
+                const el = document.getElementById(`post-card-${postId}`);
+                if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('ring-4', 'ring-cobaesGreen'); setTimeout(() => el.classList.remove('ring-4', 'ring-cobaesGreen'), 2000); }
+            }, 100);
         }
 
         // AMIGOS
         function toggleFriend(username) {
             currentUser.friends.includes(username) ? currentUser.friends = currentUser.friends.filter(u => u !== username) : currentUser.friends.push(username);
-            updateUserStorage();
-            renderCommunityUsers();
+            updateUserStorage(); renderCommunityUsers();
         }
-
         function toggleNotifyFriend(username) {
             if (!currentUser.notifyFriends) currentUser.notifyFriends = [];
             currentUser.notifyFriends.includes(username) ? currentUser.notifyFriends = currentUser.notifyFriends.filter(u => u !== username) : currentUser.notifyFriends.push(username);
-            updateUserStorage();
-            renderCommunityUsers();
+            updateUserStorage(); renderCommunityUsers();
         }
-
         function updateUserStorage() {
             const idx = users.findIndex(u => u.username === currentUser.username);
             if (idx > -1) users[idx] = currentUser;
             localStorage.setItem('cobaes_users', JSON.stringify(users));
             localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
         }
-
         function renderCommunityUsers() {
             const term = document.getElementById('search-user-input').value.toLowerCase();
             const list = document.getElementById('community-users-list');
             const others = users.filter(u => u.username !== currentUser.username && u.name.toLowerCase().includes(term));
-            
             list.innerHTML = others.map(u => {
                 const isFriend = currentUser.friends.includes(u.username);
                 const isNotifOn = currentUser.notifyFriends && currentUser.notifyFriends.includes(u.username);
                 return `
                     <div class="bg-gray-50 p-3 rounded-xl border flex flex-col space-y-2">
                         <div class="flex items-center justify-between">
-                            <div>
-                                <h4 class="font-bold text-xs">${u.name}</h4>
-                                <p class="text-[10px] text-gray-400">${u.role}</p>
-                            </div>
-                            <button onclick="toggleFriend('${u.username}')" class="px-3 py-1 rounded-lg text-xs font-bold ${isFriend ? 'bg-red-50 text-red-600' : 'bg-cobaesGreen text-white'}">
-                                ${isFriend ? 'Amigo' : 'Agregar'}
-                            </button>
+                            <div><h4 class="font-bold text-xs">${u.name}</h4><p class="text-[10px] text-gray-400">${u.role}</p></div>
+                            <button onclick="toggleFriend('${u.username}')" class="px-3 py-1 rounded-lg text-xs font-bold ${isFriend ? 'bg-red-50 text-red-600' : 'bg-cobaesGreen text-white'}">${isFriend ? 'Amigo' : 'Agregar'}</button>
                         </div>
-                        ${isFriend ? `
-                            <button onclick="toggleNotifyFriend('${u.username}')" class="text-[11px] font-semibold text-left text-cobaesGreen hover:underline flex items-center gap-1">
-                                <i class="fa-solid fa-bell${isNotifOn ? '' : '-slash'}"></i> ${isNotifOn ? 'Notificaciones de publicaciones activas' : 'Activar notificaciones de publicaciones'}
-                            </button>
-                        ` : ''}
+                        ${isFriend ? `<button onclick="toggleNotifyFriend('${u.username}')" class="text-[11px] font-semibold text-left text-cobaesGreen hover:underline flex items-center gap-1"><i class="fa-solid fa-bell${isNotifOn ? '' : '-slash'}"></i> ${isNotifOn ? 'Notificaciones activas' : 'Activar notificaciones'}</button>` : ''}
                     </div>
                 `;
             }).join('');
         }
-
         function filterCommunityUsers() { renderCommunityUsers(); }
 
         // CHAT Y SOPORTE
@@ -749,14 +760,12 @@
             if (friends.length === 0) { list.innerHTML = `<p class="text-xs text-gray-400 p-2">Agrega amigos.</p>`; return; }
             list.innerHTML = friends.map(u => `<button onclick="selectChatUser('${u.username}')" class="w-full text-left p-2 rounded-lg hover:bg-white text-xs font-bold text-gray-700">${u.name}</button>`).join('');
         }
-
         function selectChatUser(username) {
             activeChatUser = users.find(u => u.username === username);
             document.getElementById('chat-header').innerText = `Chat con ${activeChatUser.name}`;
             document.getElementById('chat-form').classList.remove('hidden');
             renderPrivateMessages();
         }
-
         function sendPrivateMessage(e) {
             e.preventDefault();
             const text = document.getElementById('chat-input').value.trim();
@@ -766,13 +775,11 @@
             document.getElementById('chat-input').value = '';
             renderPrivateMessages();
         }
-
         function renderPrivateMessages() {
             const box = document.getElementById('chat-messages-box');
             const history = messages.filter(m => (m.sender === currentUser.username && m.receiver === activeChatUser.username) || (m.sender === activeChatUser.username && m.receiver === currentUser.username));
             box.innerHTML = history.map(m => `<div class="flex flex-col ${m.sender === currentUser.username ? 'items-end' : 'items-start'}"><div class="px-3 py-1.5 rounded-xl text-xs ${m.sender === currentUser.username ? 'bg-cobaesGreen text-white' : 'bg-gray-100'}">${m.text}</div></div>`).join('');
         }
-
         function sendSuggestion(e) {
             e.preventDefault();
             const subject = document.getElementById('sugg-subject').value.trim();
@@ -781,7 +788,6 @@
             localStorage.setItem('cobaes_suggestions', JSON.stringify(suggestions));
             alert('¡Enviado!');
         }
-
         function renderAdminSuggestions() {
             const list = document.getElementById('admin-suggestions-list');
             list.innerHTML = suggestions.map(s => `<div class="p-3 bg-gray-50 rounded-xl border text-xs"><p class="font-bold text-cobaesGreen">${s.author} - ${s.subject}</p><p>${s.message}</p></div>`).join('');
@@ -795,7 +801,6 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-
         function clearPostMedia() { tempPostMediaBase64 = ""; document.getElementById('post-media-file').value = ""; document.getElementById('post-media-preview-container').classList.add('hidden'); }
 
         function createPost(e) {
@@ -847,7 +852,7 @@
             if (!text) return;
             const post = posts.find(p => p.id === postId);
             if (post) {
-                post.comments.push({ author: currentUser.name, text });
+                post.comments.push({ author: currentUser.name, text, timestamp: "Hace un momento" });
                 localStorage.setItem('cobaes_posts', JSON.stringify(posts));
                 
                 const authorUser = users.find(u => u.name === post.author);
@@ -875,7 +880,7 @@
                         </div>
                     </div>
                     <div class="px-4 py-2 text-sm text-gray-700">${post.text}</div>
-                    ${post.media ? `<div class="bg-black max-h-96 flex items-center justify-center"><img src="${post.media}" class="w-full object-cover max-h-96"></div>` : ''}
+                    ${post.media ? `<div class="bg-black max-h-96 flex items-center justify-center cursor-pointer" onclick="openLightbox(${post.id})"><img src="${post.media}" class="w-full object-cover max-h-96"></div>` : ''}
                     
                     <div class="px-4 py-2.5 border-t flex flex-wrap gap-2 text-xs text-gray-600">
                         <button onclick="reactPost(${post.id}, 'like')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">👍 ${post.reactions.like || 0}</button>
@@ -885,7 +890,7 @@
                     </div>
 
                     <div class="bg-gray-50 p-4 border-t space-y-2">
-                        ${post.comments.map(c => `<div class="bg-white p-2 rounded-lg border text-xs"><span class="font-bold text-cobaesGreen">${c.author}:</span> ${c.text}</div>`).join('')}
+                        ${post.comments.map(c => `<div class="bg-white p-2 rounded-lg border text-xs"><div class="flex justify-between"><span class="font-bold text-cobaesGreen">${c.author}</span><span class="text-[9px] text-gray-400">${c.timestamp || 'Hace un momento'}</span></div><p>${c.text}</p></div>`).join('')}
                         <form onsubmit="addComment(${post.id}, event)" class="flex gap-2 pt-1">
                             <input type="text" id="comment-input-${post.id}" placeholder="Comentar..." class="flex-grow px-3 py-1.5 rounded-lg border text-xs bg-white">
                             <button type="submit" class="bg-cobaesGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold">Comentar</button>
