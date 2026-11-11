@@ -36,13 +36,11 @@
                 </div>
             </div>
             <div id="header-user-info" class="hidden flex items-center space-x-3">
-                <!-- Botón de Notificaciones -->
                 <div class="relative">
                     <button onclick="toggleNotifications()" class="relative p-2 text-gray-600 hover:text-cobaesGreen transition">
                         <i class="fa-solid fa-bell text-lg"></i>
                         <span id="notif-badge" class="hidden absolute top-0 right-0 bg-red-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
                     </button>
-                    <!-- Menú Desplegable de Notificaciones -->
                     <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-gray-200 p-3 z-50 space-y-2">
                         <div class="flex justify-between items-center border-b pb-1 text-xs font-bold text-gray-700">
                             <span>Notificaciones</span>
@@ -124,17 +122,16 @@
         <!-- FEED SECTION -->
         <div id="feed-container" class="hidden space-y-4">
             
-            <!-- HISTORIAS / STORIES SUPERIORES -->
+            <!-- HISTORIAS / STORIES CON ACCESO A GALERÍA -->
             <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 overflow-x-auto flex space-x-3 items-center">
-                <div class="flex flex-col items-center flex-shrink-0 cursor-pointer" onclick="openAddStoryModal()">
+                <label class="flex flex-col items-center flex-shrink-0 cursor-pointer">
                     <div class="w-14 h-14 rounded-full border-2 border-dashed border-cobaesGreen flex items-center justify-center bg-green-50 text-cobaesGreen text-lg">
                         <i class="fa-solid fa-plus"></i>
                     </div>
                     <span class="text-[10px] font-bold text-gray-600 mt-1">Mi Historia</span>
-                </div>
-                <div id="stories-tray" class="flex space-x-3 items-center">
-                    <!-- Se inyectan historias -->
-                </div>
+                    <input type="file" accept="image/*" class="hidden" onchange="uploadStoryFromDevice(this)">
+                </label>
+                <div id="stories-tray" class="flex space-x-3 items-center"></div>
             </div>
 
             <!-- VISTA 1: MURO DE PUBLICACIONES -->
@@ -155,7 +152,7 @@
                                     <option value="best_friends">Mejores Amigos 🌟</option>
                                 </select>
                                 <label class="cursor-pointer bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-bold px-3 py-1.5 rounded-lg border flex items-center gap-1.5">
-                                    <i class="fa-solid fa-image text-green-600"></i> Foto
+                                    <i class="fa-solid fa-image text-green-600"></i> Foto de Dispositivo
                                     <input type="file" id="post-media-file" accept="image/*" class="hidden" onchange="previewPostMedia(this)">
                                 </label>
                             </div>
@@ -177,7 +174,7 @@
                 <div id="posts-feed" class="space-y-4"></div>
             </div>
 
-            <!-- VISTA 2: PERFIL Y ÁLBUMES -->
+            <!-- VISTA 2: PERFIL -->
             <div id="view-profile" class="hidden space-y-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center">
                     <div class="w-20 h-20 rounded-full bg-cobaesGreen text-white text-2xl font-bold flex items-center justify-center mx-auto mb-2 overflow-hidden shadow">
@@ -215,7 +212,7 @@
                 </div>
             </div>
 
-            <!-- VISTA 3: AMIGOS Y COMUNIDAD -->
+            <!-- VISTA 3: AMIGOS -->
             <div id="view-friends" class="hidden space-y-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between gap-3">
@@ -274,7 +271,7 @@
 
     </main>
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR (ESTILO APP MÓVIL) -->
+    <!-- BARRA DE NAVEGACIÓN INFERIOR -->
     <nav id="bottom-nav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg py-2 px-6 flex justify-around items-center z-50">
         <button onclick="switchView('feed')" id="nav-btn-feed" class="flex flex-col items-center text-cobaesGreen">
             <i class="fa-solid fa-house text-lg"></i>
@@ -408,13 +405,18 @@
             if (viewName === 'admin') renderAdminSuggestions();
         }
 
-        // HISTORIAS / STORIES
-        function openAddStoryModal() {
-            const mediaUrl = prompt("Ingresa el enlace de foto o estado para tu historia:");
-            if (!mediaUrl) return;
-            stories.unshift({ id: Date.now(), author: currentUser.name, media: mediaUrl, timestamp: "Hace un momento" });
-            localStorage.setItem('cobaes_stories', JSON.stringify(stories));
-            renderStories();
+        // HISTORIAS DESDE EL DISPOSITIVO
+        function uploadStoryFromDevice(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    stories.unshift({ id: Date.now(), author: currentUser.name, media: e.target.result, timestamp: "Hace un momento" });
+                    localStorage.setItem('cobaes_stories', JSON.stringify(stories));
+                    renderStories();
+                    alert('¡Historia subida con éxito!');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
         function renderStories() {
@@ -584,7 +586,7 @@
             list.innerHTML = suggestions.map(s => `<div class="p-3 bg-gray-50 rounded-xl border text-xs"><p class="font-bold text-cobaesGreen">${s.author} - ${s.subject}</p><p>${s.message}</p></div>`).join('');
         }
 
-        // PUBLICACIONES Y REACCIONES CON EMOJIS INSTITUCIONALES
+        // PUBLICACIONES
         function previewPostMedia(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -602,7 +604,6 @@
             const audience = document.getElementById('post-audience').value;
             if (!text && !tempPostMediaBase64) return;
 
-            // Soporte de menciones con @
             users.forEach(u => {
                 if (text.includes(`@${u.username}`)) {
                     text = text.replace(`@${u.username}`, `<span class="text-cobaesGreen font-bold">@${u.name}</span>`);
@@ -665,7 +666,6 @@
                     <div class="px-4 py-2 text-sm text-gray-700">${post.text}</div>
                     ${post.media ? `<div class="bg-black max-h-96 flex items-center justify-center"><img src="${post.media}" class="w-full object-cover max-h-96"></div>` : ''}
                     
-                    <!-- REACCIONES INSTITUCIONALES -->
                     <div class="px-4 py-2.5 border-t flex flex-wrap gap-2 text-xs text-gray-600">
                         <button onclick="reactPost(${post.id}, 'like')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">👍 ${post.reactions.like || 0}</button>
                         <button onclick="reactPost(${post.id}, 'pride')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">🏫 Orgullo (${post.reactions.pride || 0})</button>
