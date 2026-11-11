@@ -74,11 +74,11 @@
                     <button onclick="switchTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent transition">Registro Escolar</button>
                 </div>
 
-                <!-- LOGIN FORM -->
+                <!-- LOGIN FORM (CON NÚMERO DE TELÉFONO) -->
                 <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Usuario</label>
-                        <input type="text" id="login-username" required class="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none" placeholder="Tu usuario">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Número de Celular</label>
+                        <input type="tel" id="login-phone" required class="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none" placeholder="Ej. 6671234567">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Contraseña</label>
@@ -92,21 +92,21 @@
 
                 <!-- REGISTER FORM -->
                 <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nombre Completo</label>
-                            <input type="text" id="reg-name" required class="w-full px-3 py-2 rounded-xl border text-sm" placeholder="Tu nombre">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Usuario</label>
-                            <input type="text" id="reg-username" required class="w-full px-3 py-2 rounded-xl border text-sm" placeholder="@usuario">
-                        </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nombre Completo</label>
+                        <input type="text" id="reg-name" required class="w-full px-3 py-2 rounded-xl border text-sm" placeholder="Tu nombre">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Contraseña</label>
-                            <input type="password" id="reg-password" required class="w-full px-3 py-2 rounded-xl border text-sm" placeholder="••••••••">
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Número de Celular</label>
+                            <input type="tel" id="reg-phone" required class="w-full px-3.5 py-2 rounded-xl border text-sm" placeholder="Ej. 6671234567">
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Contraseña</label>
+                            <input type="password" id="reg-password" required class="w-full px-3.5 py-2 rounded-xl border text-sm" placeholder="••••••••">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Rol</label>
                             <select id="reg-role" class="w-full px-3 py-2 rounded-xl border text-sm bg-white">
@@ -114,15 +114,9 @@
                                 <option value="Docente">Docente / Profesor</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Matrícula / Crd. Único</label>
-                            <input type="text" id="reg-code" required class="w-full px-3.5 py-2 rounded-xl border text-sm" placeholder="Ej. 2026-CB63-XXXX">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Celular de Contacto</label>
-                            <input type="text" id="reg-phone" required class="w-full px-3.5 py-2 rounded-xl border text-sm" placeholder="Ej. 6671234567">
+                            <input type="text" id="reg-code" required class="w-full px-3.5 py-2 rounded-xl border text-sm" placeholder="Ej. 2026-CB63">
                         </div>
                     </div>
                     <button type="submit" class="w-full bg-cobaesGreen text-white font-bold py-3 rounded-xl shadow-md transition text-sm mt-2">Registrarse y Verificar</button>
@@ -278,7 +272,7 @@
             <div id="view-admin" class="hidden space-y-4">
                 <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl">
                     <h3 class="font-bold text-amber-900 text-sm"><i class="fa-solid fa-shield-halved mr-1"></i> Panel Administrador</h3>
-                    <p class="text-xs text-amber-800 mt-1">Gestiona solicitudes de recuperación de cuentas y sanciones a usuarios.</p>
+                    <p class="text-xs text-amber-800 mt-1">Gestiona solicitudes de recuperación de cuentas por teléfono y sanciones a usuarios.</p>
                 </div>
                 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
@@ -301,20 +295,19 @@
 
     </main>
 
-    <!-- MODAL DE RECUPERACIÓN DE CONTRASEÑA -->
+    <!-- MODAL DE RECUPERACIÓN DE CONTRASEÑA POR TELÉFONO -->
     <div id="recovery-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
-            <h3 class="font-bold text-base text-cobaesGreen"><i class="fa-solid fa-shield-halved mr-1"></i> Recuperar Cuenta</h3>
-            <p class="text-xs text-gray-500">Ingresa tu usuario, tu matrícula única de COBAES y tu número de celular registrado para que el administrador valide tu identidad y te asigne una contraseña provisional.</p>
+            <h3 class="font-bold text-base text-cobaesGreen"><i class="fa-solid fa-phone mr-1"></i> Recuperar con Celular</h3>
+            <p class="text-xs text-gray-500">Ingresa tu número de celular registrado y tu matrícula o carnet único escolar para validar tu cuenta en el panel del administrador.</p>
             
             <form onsubmit="submitRecoveryRequest(event)" class="space-y-3">
-                <input type="text" id="rec-username" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs" placeholder="Tu usuario">
+                <input type="tel" id="rec-phone" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs" placeholder="Número de celular registrado">
                 <input type="text" id="rec-code" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs" placeholder="Matrícula / Crd. Único COBAES">
-                <input type="text" id="rec-phone" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs" placeholder="Número de celular">
                 
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeRecoveryModal()" class="px-4 py-2 rounded-xl border text-xs font-bold text-gray-600">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-cobaesGreen text-xs font-bold text-white shadow">Enviar Solicitud</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-cobaesGreen text-xs font-bold text-white shadow">Solicitar Recuperación</button>
                 </div>
             </form>
         </div>
@@ -426,8 +419,8 @@
     <script>
         let currentUser = JSON.parse(localStorage.getItem('cobaes_current_user')) || null;
         let users = JSON.parse(localStorage.getItem('cobaes_users')) || [
-            { name: "Oskar Macías Limon", username: "admin", pass: "admin123", role: "Administrador", code: "ADM-63-000", phone: "6670000000", bio: "Admin COBAES 63", avatar: "", socialPrivacy: "public", fb: "oskar.macias", ig: "@oskarmacias", tk: "", friends: ["val_soto"], bestFriends: [], notifyFriends: [], isAdmin: true, suspended: false },
-            { name: "Valeria Soto", username: "val_soto", pass: "1234", role: "Alumno", code: "2026-CB63-4412", phone: "6671112233", bio: "Estudiante 4to semestre", avatar: "", socialPrivacy: "friends", fb: "valeria.soto", ig: "@valesoto", tk: "", friends: ["admin"], bestFriends: [], notifyFriends: [], isAdmin: false, suspended: false }
+            { name: "Oskar Macías Limon", phone: "6670000000", pass: "admin123", role: "Administrador", code: "ADM-63-000", bio: "Admin COBAES 63", avatar: "", socialPrivacy: "public", fb: "oskar.macias", ig: "@oskarmacias", tk: "", friends: ["6671112233"], bestFriends: [], notifyFriends: [], isAdmin: true, suspended: false },
+            { name: "Valeria Soto", phone: "6671112233", pass: "1234", role: "Alumno", code: "2026-CB63-4412", bio: "Estudiante 4to semestre", avatar: "", socialPrivacy: "friends", fb: "valeria.soto", ig: "@valesoto", tk: "", friends: ["6670000000"], bestFriends: [], notifyFriends: [], isAdmin: false, suspended: false }
         ];
         let posts = JSON.parse(localStorage.getItem('cobaes_posts')) || [];
         let stories = JSON.parse(localStorage.getItem('cobaes_stories')) || [];
@@ -447,7 +440,7 @@
         window.addEventListener('DOMContentLoaded', () => { 
             cleanExpiredStories();
             if (currentUser) {
-                const freshUser = users.find(u => u.username === currentUser.username);
+                const freshUser = users.find(u => u.phone === currentUser.phone);
                 if (freshUser && freshUser.suspended) {
                     alert('Tu cuenta se encuentra suspendida temporalmente por sanción.');
                     logout();
@@ -457,7 +450,6 @@
             }
         });
 
-        // UTILIDAD DE TIEMPO TRANSCURRIDO REAL
         function timeAgo(timestamp) {
             if (!timestamp) return "Hace un momento";
             const seconds = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000);
@@ -470,7 +462,6 @@
             return `Hace ${days} d`;
         }
 
-        // LIMPIAR HISTORIAS DE MÁS DE 24 HORAS
         function cleanExpiredStories() {
             const now = Date.now();
             stories = stories.filter(s => (now - new Date(s.timestamp).getTime()) < 24 * 60 * 60 * 1000);
@@ -487,16 +478,15 @@
         function handleRegister(e) {
             e.preventDefault();
             const name = document.getElementById('reg-name').value.trim();
-            const username = document.getElementById('reg-username').value.trim().toLowerCase();
+            const phone = document.getElementById('reg-phone').value.trim();
             const pass = document.getElementById('reg-password').value;
             const role = document.getElementById('reg-role').value;
             const code = document.getElementById('reg-code').value.trim();
-            const phone = document.getElementById('reg-phone').value.trim();
 
-            if (users.some(u => u.username === username)) { alert('Usuario ya registrado.'); return; }
+            if (users.some(u => u.phone === phone)) { alert('Este número de celular ya está registrado.'); return; }
             if (users.some(u => u.code === code)) { alert('Esta matrícula/código de estudiante ya está registrada.'); return; }
 
-            const newUser = { name, username, pass, role, code, phone, avatar: "", bio: "Sin descripción", socialPrivacy: "public", fb: "", ig: "", tk: "", friends: [], bestFriends: [], notifyFriends: [], isAdmin: false, suspended: false };
+            const newUser = { name, phone, pass, role, code, avatar: "", bio: "Sin descripción", socialPrivacy: "public", fb: "", ig: "", tk: "", friends: [], bestFriends: [], notifyFriends: [], isAdmin: false, suspended: false };
             users.push(newUser);
             localStorage.setItem('cobaes_users', JSON.stringify(users));
             currentUser = newUser;
@@ -506,15 +496,15 @@
 
         function handleLogin(e) {
             e.preventDefault();
-            const username = document.getElementById('login-username').value.trim().toLowerCase();
+            const phone = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-password').value;
-            const found = users.find(u => u.username === username && u.pass === pass);
+            const found = users.find(u => u.phone === phone && u.pass === pass);
             if (found) {
                 if (found.suspended) { alert('Esta cuenta se encuentra suspendida temporalmente.'); return; }
                 currentUser = found;
                 localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
                 showFeedView();
-            } else { alert('Usuario o contraseña incorrectos.'); }
+            } else { alert('Número de celular o contraseña incorrectos.'); }
         }
 
         function logout() {
@@ -526,30 +516,29 @@
             document.getElementById('bottom-nav').classList.add('hidden');
         }
 
-        // RECUPERACIÓN DE CONTRASEÑA
+        // RECUPERACIÓN POR TELÉFONO Y MATRÍCULA
         function showRecoveryModal() { document.getElementById('recovery-modal').classList.remove('hidden'); }
         function closeRecoveryModal() { document.getElementById('recovery-modal').classList.add('hidden'); }
         
         function submitRecoveryRequest(e) {
             e.preventDefault();
-            const username = document.getElementById('rec-username').value.trim().toLowerCase();
-            const code = document.getElementById('rec-code').value.trim();
             const phone = document.getElementById('rec-phone').value.trim();
+            const code = document.getElementById('rec-code').value.trim();
 
-            const userFound = users.find(u => u.username === username && u.code === code && u.phone === phone);
+            const userFound = users.find(u => u.phone === phone && u.code === code);
             if (!userFound) {
-                alert('Los datos proporcionados no coinciden con ningún registro verificado. Contacta a soporte.');
+                alert('El número de celular y la matrícula no coinciden con ningún registro.');
                 return;
             }
 
-            recoveryRequests.unshift({ id: Date.now(), username, name: userFound.name, code, phone, timestamp: new Date() });
+            recoveryRequests.unshift({ id: Date.now(), phone, name: userFound.name, code, timestamp: new Date() });
             localStorage.setItem('cobaes_recoveries', JSON.stringify(recoveryRequests));
             closeRecoveryModal();
-            alert('¡Solicitud enviada al Administrador con éxito! Espera a que el admin te asigne tu contraseña provisional.');
+            alert('¡Solicitud de recuperación enviada al Administrador con éxito! Espera a que te asigne una contraseña provisional.');
         }
 
         function showFeedView() {
-            currentUser = users.find(u => u.username === currentUser.username);
+            currentUser = users.find(u => u.phone === currentUser.phone);
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('feed-container').classList.remove('hidden');
             document.getElementById('header-user-info').classList.remove('hidden');
@@ -621,7 +610,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     currentUser.avatar = e.target.result;
-                    const idx = users.findIndex(u => u.username === currentUser.username);
+                    const idx = users.findIndex(u => u.phone === currentUser.phone);
                     if (idx > -1) users[idx] = currentUser;
                     localStorage.setItem('cobaes_users', JSON.stringify(users));
                     localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
@@ -651,7 +640,7 @@
             currentUser.ig = document.getElementById('edit-ig').value.trim();
             currentUser.tk = document.getElementById('edit-tk').value.trim();
 
-            const idx = users.findIndex(u => u.username === currentUser.username);
+            const idx = users.findIndex(u => u.phone === currentUser.phone);
             if (idx > -1) users[idx] = currentUser;
             localStorage.setItem('cobaes_users', JSON.stringify(users));
             localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
@@ -660,7 +649,7 @@
             showFeedView();
         }
 
-        // HISTORIAS (24 HORAS Y ELIMINACIÓN)
+        // HISTORIAS
         function prepareStoryEdit(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -681,7 +670,7 @@
         function publishStory() {
             const caption = document.getElementById('story-caption-input').value.trim();
             if (!tempStoryMedia) return;
-            const newStory = { id: Date.now(), author: currentUser.name, username: currentUser.username, media: tempStoryMedia, caption: caption, timestamp: new Date() };
+            const newStory = { id: Date.now(), author: currentUser.name, phone: currentUser.phone, media: tempStoryMedia, caption: caption, timestamp: new Date() };
             stories.unshift(newStory);
             localStorage.setItem('cobaes_stories', JSON.stringify(stories));
             closeStoryEditor();
@@ -728,9 +717,8 @@
             const cap = document.getElementById('viewer-caption');
             if (s.caption) { cap.innerText = s.caption; cap.classList.remove('hidden'); } else { cap.classList.add('hidden'); }
 
-            // Mostrar botón de eliminar si es dueño o admin
             const delBtn = document.getElementById('viewer-delete-btn');
-            if (currentUser && (s.username === currentUser.username || currentUser.isAdmin)) {
+            if (currentUser && (s.phone === currentUser.phone || currentUser.isAdmin)) {
                 delBtn.classList.remove('hidden');
             } else {
                 delBtn.classList.add('hidden');
@@ -751,7 +739,6 @@
             alert('Historia eliminada.');
         }
 
-        // ELIMINAR PUBLICACIÓN
         function deletePost(postId) {
             if (!confirm('¿Estás seguro de eliminar esta publicación?')) return;
             posts = posts.filter(p => p.id !== postId);
@@ -831,7 +818,7 @@
 
         function renderUserPhotoAlbum() {
             const album = document.getElementById('user-photo-album');
-            const myMedia = posts.filter(p => p.username === currentUser.username && p.media);
+            const myMedia = posts.filter(p => p.phone === currentUser.phone && p.media);
             if (myMedia.length === 0) { album.innerHTML = `<p class="text-xs text-gray-400 col-span-3">Sin fotos publicadas.</p>`; return; }
             album.innerHTML = myMedia.map(p => `<div class="rounded-xl overflow-hidden border h-24"><img src="${p.media}" class="w-full h-full object-cover"></div>`).join('');
         }
@@ -840,28 +827,28 @@
 
         // NOTIFICACIONES
         function toggleNotifications() { document.getElementById('notif-dropdown').classList.toggle('hidden'); renderNotificationsList(); }
-        function addNotification(targetUsername, text, postId) {
+        function addNotification(targetPhone, text, postId) {
             let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-            allNotifs.unshift({ id: Date.now(), targetUser: targetUsername, text, postId, read: false });
+            allNotifs.unshift({ id: Date.now(), targetPhone, text, postId, read: false });
             localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
             renderNotificationsBadge();
         }
         function renderNotificationsBadge() {
             let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-            const userNotifs = allNotifs.filter(n => n.targetUser === currentUser.username && !n.read);
+            const userNotifs = allNotifs.filter(n => n.targetPhone === currentUser.phone && !n.read);
             const badge = document.getElementById('notif-badge');
             if (userNotifs.length > 0) { badge.innerText = userNotifs.length; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
         }
         function renderNotificationsList() {
             const list = document.getElementById('notif-list');
             let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-            const userNotifs = allNotifs.filter(n => n.targetUser === currentUser.username);
+            const userNotifs = allNotifs.filter(n => n.targetPhone === currentUser.phone);
             if (userNotifs.length === 0) { list.innerHTML = `<p class="text-gray-400 text-center py-2">Sin notificaciones</p>`; return; }
             list.innerHTML = userNotifs.map(n => `<div onclick="goToPost(${n.postId})" class="p-2 bg-gray-50 rounded-lg border cursor-pointer hover:bg-gray-100 transition ${n.read ? 'opacity-60' : 'font-bold'}">${n.text}</div>`).join('');
         }
         function clearNotifications() {
             let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
-            allNotifs.forEach(n => { if (n.targetUser === currentUser.username) n.read = true; });
+            allNotifs.forEach(n => { if (n.targetPhone === currentUser.phone) n.read = true; });
             localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
             renderNotificationsBadge(); renderNotificationsList();
         }
@@ -876,17 +863,17 @@
         }
 
         // AMIGOS
-        function toggleFriend(username) {
-            currentUser.friends.includes(username) ? currentUser.friends = currentUser.friends.filter(u => u !== username) : currentUser.friends.push(username);
+        function toggleFriend(phone) {
+            currentUser.friends.includes(phone) ? currentUser.friends = currentUser.friends.filter(p => p !== phone) : currentUser.friends.push(phone);
             updateUserStorage(); renderCommunityUsers();
         }
-        function toggleNotifyFriend(username) {
+        function toggleNotifyFriend(phone) {
             if (!currentUser.notifyFriends) currentUser.notifyFriends = [];
-            currentUser.notifyFriends.includes(username) ? currentUser.notifyFriends = currentUser.notifyFriends.filter(u => u !== username) : currentUser.notifyFriends.push(username);
+            currentUser.notifyFriends.includes(phone) ? currentUser.notifyFriends = currentUser.notifyFriends.filter(p => p !== phone) : currentUser.notifyFriends.push(phone);
             updateUserStorage(); renderCommunityUsers();
         }
         function updateUserStorage() {
-            const idx = users.findIndex(u => u.username === currentUser.username);
+            const idx = users.findIndex(u => u.phone === currentUser.phone);
             if (idx > -1) users[idx] = currentUser;
             localStorage.setItem('cobaes_users', JSON.stringify(users));
             localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
@@ -894,17 +881,17 @@
         function renderCommunityUsers() {
             const term = document.getElementById('search-user-input').value.toLowerCase();
             const list = document.getElementById('community-users-list');
-            const others = users.filter(u => u.username !== currentUser.username && u.name.toLowerCase().includes(term));
+            const others = users.filter(u => u.phone !== currentUser.phone && u.name.toLowerCase().includes(term));
             list.innerHTML = others.map(u => {
-                const isFriend = currentUser.friends.includes(u.username);
-                const isNotifOn = currentUser.notifyFriends && currentUser.notifyFriends.includes(u.username);
+                const isFriend = currentUser.friends.includes(u.phone);
+                const isNotifOn = currentUser.notifyFriends && currentUser.notifyFriends.includes(u.phone);
                 return `
                     <div class="bg-gray-50 p-3 rounded-xl border flex flex-col space-y-2">
                         <div class="flex items-center justify-between">
                             <div><h4 class="font-bold text-xs">${u.name}</h4><p class="text-[10px] text-gray-400">${u.role}</p></div>
-                            <button onclick="toggleFriend('${u.username}')" class="px-3 py-1 rounded-lg text-xs font-bold ${isFriend ? 'bg-red-50 text-red-600' : 'bg-cobaesGreen text-white'}">${isFriend ? 'Amigo' : 'Agregar'}</button>
+                            <button onclick="toggleFriend('${u.phone}')" class="px-3 py-1 rounded-lg text-xs font-bold ${isFriend ? 'bg-red-50 text-red-600' : 'bg-cobaesGreen text-white'}">${isFriend ? 'Amigo' : 'Agregar'}</button>
                         </div>
-                        ${isFriend ? `<button onclick="toggleNotifyFriend('${u.username}')" class="text-[11px] font-semibold text-left text-cobaesGreen hover:underline flex items-center gap-1"><i class="fa-solid fa-bell${isNotifOn ? '' : '-slash'}"></i> ${isNotifOn ? 'Notificaciones activas' : 'Activar notificaciones'}</button>` : ''}
+                        ${isFriend ? `<button onclick="toggleNotifyFriend('${u.phone}')" class="text-[11px] font-semibold text-left text-cobaesGreen hover:underline flex items-center gap-1"><i class="fa-solid fa-bell${isNotifOn ? '' : '-slash'}"></i> ${isNotifOn ? 'Notificaciones activas' : 'Activar notificaciones'}</button>` : ''}
                     </div>
                 `;
             }).join('');
@@ -914,12 +901,12 @@
         // CHAT Y SOPORTE
         function renderChatUsers() {
             const list = document.getElementById('chat-users-list');
-            const friends = users.filter(u => currentUser.friends.includes(u.username));
+            const friends = users.filter(u => currentUser.friends.includes(u.phone));
             if (friends.length === 0) { list.innerHTML = `<p class="text-xs text-gray-400 p-2">Agrega amigos.</p>`; return; }
-            list.innerHTML = friends.map(u => `<button onclick="selectChatUser('${u.username}')" class="w-full text-left p-2 rounded-lg hover:bg-white text-xs font-bold text-gray-700">${u.name}</button>`).join('');
+            list.innerHTML = friends.map(u => `<button onclick="selectChatUser('${u.phone}')" class="w-full text-left p-2 rounded-lg hover:bg-white text-xs font-bold text-gray-700">${u.name}</button>`).join('');
         }
-        function selectChatUser(username) {
-            activeChatUser = users.find(u => u.username === username);
+        function selectChatUser(phone) {
+            activeChatUser = users.find(u => u.phone === phone);
             document.getElementById('chat-header').innerText = `Chat con ${activeChatUser.name}`;
             document.getElementById('chat-form').classList.remove('hidden');
             renderPrivateMessages();
@@ -928,15 +915,15 @@
             e.preventDefault();
             const text = document.getElementById('chat-input').value.trim();
             if (!text || !activeChatUser) return;
-            messages.push({ sender: currentUser.username, receiver: activeChatUser.username, text, timestamp: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) });
+            messages.push({ sender: currentUser.phone, receiver: activeChatUser.phone, text, timestamp: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) });
             localStorage.setItem('cobaes_messages', JSON.stringify(messages));
             document.getElementById('chat-input').value = '';
             renderPrivateMessages();
         }
         function renderPrivateMessages() {
             const box = document.getElementById('chat-messages-box');
-            const history = messages.filter(m => (m.sender === currentUser.username && m.receiver === activeChatUser.username) || (m.sender === activeChatUser.username && m.receiver === currentUser.username));
-            box.innerHTML = history.map(m => `<div class="flex flex-col ${m.sender === currentUser.username ? 'items-end' : 'items-start'}"><div class="px-3 py-1.5 rounded-xl text-xs ${m.sender === currentUser.username ? 'bg-cobaesGreen text-white' : 'bg-gray-100'}">${m.text}</div></div>`).join('');
+            const history = messages.filter(m => (m.sender === currentUser.phone && m.receiver === activeChatUser.phone) || (m.sender === activeChatUser.phone && m.receiver === currentUser.phone));
+            box.innerHTML = history.map(m => `<div class="flex flex-col ${m.sender === currentUser.phone ? 'items-end' : 'items-start'}"><div class="px-3 py-1.5 rounded-xl text-xs ${m.sender === currentUser.phone ? 'bg-cobaesGreen text-white' : 'bg-gray-100'}">${m.text}</div></div>`).join('');
         }
         function sendSuggestion(e) {
             e.preventDefault();
@@ -960,20 +947,20 @@
             list.innerHTML = recoveryRequests.map(r => `
                 <div class="p-3 bg-gray-50 rounded-xl border text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <div>
-                        <p class="font-bold text-cobaesGreen">${r.name} (@${r.username})</p>
-                        <p class="text-gray-500">Matrícula: ${r.code} | Cel: ${r.phone}</p>
+                        <p class="font-bold text-cobaesGreen">${r.name} (Cel: ${r.phone})</p>
+                        <p class="text-gray-500">Matrícula: ${r.code}</p>
                         <p class="text-[10px] text-gray-400">${timeAgo(r.timestamp)}</p>
                     </div>
-                    <button onclick="resolveRecovery('${r.username}', ${r.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg font-bold">Asignar Provisional y Aprobar</button>
+                    <button onclick="resolveRecovery('${r.phone}', ${r.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg font-bold">Asignar Provisional y Aprobar</button>
                 </div>
             `).join('');
         }
 
-        function resolveRecovery(targetUsername, reqId) {
-            const newPass = prompt(`Ingresa una contraseña provisional para el usuario @${targetUsername}:`);
+        function resolveRecovery(targetPhone, reqId) {
+            const newPass = prompt(`Ingresa una contraseña provisional para el celular ${targetPhone}:`);
             if (!newPass) return;
 
-            const uIndex = users.findIndex(u => u.username === targetUsername);
+            const uIndex = users.findIndex(u => u.phone === targetPhone);
             if (uIndex > -1) {
                 users[uIndex].pass = newPass;
                 localStorage.setItem('cobaes_users', JSON.stringify(users));
@@ -981,7 +968,7 @@
 
             recoveryRequests = recoveryRequests.filter(r => r.id !== reqId);
             localStorage.setItem('cobaes_recoveries', JSON.stringify(recoveryRequests));
-            alert(`¡Contraseña provisional establecida con éxito para @${targetUsername}!`);
+            alert(`¡Contraseña provisional establecida con éxito para el celular ${targetPhone}!`);
             renderAdminRecoveries();
         }
 
@@ -992,22 +979,22 @@
             list.innerHTML = regulareUsers.map(u => `
                 <div class="p-3 bg-gray-50 rounded-xl border text-xs flex justify-between items-center">
                     <div>
-                        <p class="font-bold">${u.name} <span class="text-gray-400">(@${u.username})</span></p>
+                        <p class="font-bold">${u.name} <span class="text-gray-400">(Cel: ${u.phone})</span></p>
                         <p class="text-[10px] text-gray-500">Rol: ${u.role} | Matrícula: ${u.code}</p>
                         <p class="text-[10px] font-semibold ${u.suspended ? 'text-red-600' : 'text-emerald-600'}">${u.suspended ? '⚠️ Sancionado / Suspendido' : 'Activo'}</p>
                     </div>
-                    <button onclick="toggleSuspendUser('${u.username}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${u.suspended ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'}">${u.suspended ? 'Quitar Sanción' : 'Sancionar / Suspender'}</button>
+                    <button onclick="toggleSuspendUser('${u.phone}')" class="px-3 py-1.5 rounded-lg text-xs font-bold ${u.suspended ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'}">${u.suspended ? 'Quitar Sanción' : 'Sancionar / Suspender'}</button>
                 </div>
             `).join('');
         }
 
-        function toggleSuspendUser(username) {
-            const uIndex = users.findIndex(u => u.username === username);
+        function toggleSuspendUser(phone) {
+            const uIndex = users.findIndex(u => u.phone === phone);
             if (uIndex > -1) {
                 users[uIndex].suspended = !users[uIndex].suspended;
                 localStorage.setItem('cobaes_users', JSON.stringify(users));
                 renderAdminUsers();
-                alert(`Estado de sanción actualizado para @${username}`);
+                alert(`Estado de sanción actualizado para el teléfono ${phone}`);
             }
         }
 
@@ -1029,12 +1016,12 @@
             if (!text && !tempPostMediaBase64) return;
 
             const newPostId = Date.now();
-            posts.unshift({ id: newPostId, author: currentUser.name, username: currentUser.username, role: currentUser.role, category, audience, text, media: tempPostMediaBase64, reactions: { like: 0, pride: 0, fire: 0, useful: 0 }, reactedBy: [], comments: [], timestamp: new Date() });
+            posts.unshift({ id: newPostId, author: currentUser.name, phone: currentUser.phone, role: currentUser.role, category, audience, text, media: tempPostMediaBase64, reactions: { like: 0, pride: 0, fire: 0, useful: 0 }, reactedBy: [], comments: [], timestamp: new Date() });
             localStorage.setItem('cobaes_posts', JSON.stringify(posts));
 
             users.forEach(u => {
-                if (u.notifyFriends && u.notifyFriends.includes(currentUser.username)) {
-                    addNotification(u.username, `${currentUser.name} hizo una nueva publicación 📝`, newPostId);
+                if (u.notifyFriends && u.notifyFriends.includes(currentUser.phone)) {
+                    addNotification(u.phone, `${currentUser.name} hizo una nueva publicación 📝`, newPostId);
                 }
             });
 
@@ -1050,14 +1037,14 @@
             if (!post) return;
             if (!post.reactedBy) post.reactedBy = [];
             
-            if (!post.reactedBy.includes(currentUser.username)) {
+            if (!post.reactedBy.includes(currentUser.phone)) {
                 post.reactions[type]++;
-                post.reactedBy.push(currentUser.username);
+                post.reactedBy.push(currentUser.phone);
                 localStorage.setItem('cobaes_posts', JSON.stringify(posts));
                 
                 const authorUser = users.find(u => u.name === post.author);
-                if (authorUser && authorUser.username !== currentUser.username) {
-                    addNotification(authorUser.username, `A ${currentUser.name} le gustó tu publicación ❤️`, post.id);
+                if (authorUser && authorUser.phone !== currentUser.phone) {
+                    addNotification(authorUser.phone, `A ${currentUser.name} le gustó tu publicación ❤️`, post.id);
                 }
                 renderPosts();
             }
@@ -1074,8 +1061,8 @@
                 localStorage.setItem('cobaes_posts', JSON.stringify(posts));
                 
                 const authorUser = users.find(u => u.name === post.author);
-                if (authorUser && authorUser.username !== currentUser.username) {
-                    addNotification(authorUser.username, `${currentUser.name} comentó tu foto 💬`, post.id);
+                if (authorUser && authorUser.phone !== currentUser.phone) {
+                    addNotification(authorUser.phone, `${currentUser.name} comentó tu foto 💬`, post.id);
                 }
                 renderPosts();
             }
@@ -1087,7 +1074,7 @@
             if (visible.length === 0) { feed.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-gray-400 border">Sin publicaciones.</div>`; return; }
 
             feed.innerHTML = visible.map(post => {
-                const canDelete = currentUser && (post.username === currentUser.username || currentUser.isAdmin);
+                const canDelete = currentUser && (post.phone === currentUser.phone || currentUser.isAdmin);
                 return `
                     <div id="post-card-${post.id}" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition duration-300">
                         <div class="p-4 flex items-center justify-between pb-2">
