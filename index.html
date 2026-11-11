@@ -32,10 +32,11 @@
                     <h1 class="text-base font-bold text-cobaesGreen leading-tight flex items-center gap-1">
                         COBAES 63 <span class="bg-cobaesGreen text-white text-[9px] px-1.5 py-0.2 rounded-full font-normal">Oficial</span>
                     </h1>
-                    <p class="text-[10px] text-gray-500">Colegio de Bachilleres del Estado de Sinaloa[span_0](start_span)[span_0](end_span)</p>
+                    <p class="text-[10px] text-gray-500">Colegio de Bachilleres del Estado de Sinaloa[span_2](start_span)[span_2](end_span)</p>
                 </div>
             </div>
             <div id="header-user-info" class="hidden flex items-center space-x-3">
+                <!-- CAMPANITA DE NOTIFICACIONES CON CONTADOR ROJO -->
                 <div class="relative">
                     <button onclick="toggleNotifications()" class="relative p-2 text-gray-600 hover:text-cobaesGreen transition">
                         <i class="fa-solid fa-bell text-lg"></i>
@@ -122,7 +123,7 @@
         <!-- FEED SECTION -->
         <div id="feed-container" class="hidden space-y-4">
             
-            <!-- HISTORIAS / STORIES CON ACCESO A GALERÍA -->
+            <!-- HISTORIAS CON SUBIDA DIRECTA -->
             <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 overflow-x-auto flex space-x-3 items-center">
                 <label class="flex flex-col items-center flex-shrink-0 cursor-pointer">
                     <div class="w-14 h-14 rounded-full border-2 border-dashed border-cobaesGreen flex items-center justify-center bg-green-50 text-cobaesGreen text-lg">
@@ -134,7 +135,7 @@
                 <div id="stories-tray" class="flex space-x-3 items-center"></div>
             </div>
 
-            <!-- VISTA 1: MURO DE PUBLICACIONES -->
+            <!-- VISTA 1: MURO -->
             <div id="view-feed" class="space-y-4">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
                     <form onsubmit="createPost(event)" class="space-y-3">
@@ -174,14 +175,21 @@
                 <div id="posts-feed" class="space-y-4"></div>
             </div>
 
-            <!-- VISTA 2: PERFIL -->
+            <!-- VISTA 2: PERFIL CON CLIC PARA CAMBIAR FOTO Y NOMBRE REAL -->
             <div id="view-profile" class="hidden space-y-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center">
-                    <div class="w-20 h-20 rounded-full bg-cobaesGreen text-white text-2xl font-bold flex items-center justify-center mx-auto mb-2 overflow-hidden shadow">
-                        <span id="my-prof-avatar-text">U</span>
-                        <img id="my-prof-avatar-img" class="w-full h-full object-cover hidden">
-                    </div>
-                    <h3 id="my-prof-name" class="font-bold text-base text-gray-800">Nombre</h3>
+                    <!-- FOTO DE PERFIL CLICKEABLE -->
+                    <label class="cursor-pointer inline-block relative group mb-2">
+                        <div class="w-20 h-20 rounded-full bg-cobaesGreen text-white text-2xl font-bold flex items-center justify-center mx-auto overflow-hidden shadow">
+                            <span id="my-prof-avatar-text">U</span>
+                            <img id="my-prof-avatar-img" class="w-full h-full object-cover hidden">
+                        </div>
+                        <div class="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition text-xs font-bold">
+                            Cambiar
+                        </div>
+                        <input type="file" accept="image/*" class="hidden" onchange="uploadProfileAvatarDirect(this)">
+                    </label>
+                    <h3 id="my-prof-name" class="font-bold text-base text-gray-800">Nombre del usuario</h3>
                     <p id="my-prof-role" class="text-xs bg-green-100 text-cobaesGreen inline-block px-2.5 py-0.5 rounded-full font-bold mt-1">Alumno</p>
                     <p id="my-prof-bio" class="text-xs text-gray-500 mt-2 italic">Sin descripción</p>
                     <button onclick="shareMyProfileWhatsApp()" class="mt-3 bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl inline-flex items-center gap-1.5 shadow">
@@ -193,7 +201,6 @@
                     <h3 class="font-bold text-sm text-cobaesGreen mb-3"><i class="fa-solid fa-user-gear mr-1"></i> Editar Información</h3>
                     <form onsubmit="updateProfile(event)" class="space-y-3">
                         <input type="text" id="edit-name" required class="w-full px-3 py-2 rounded-xl border text-xs" placeholder="Nombre completo">
-                        <input type="file" id="edit-avatar-file" accept="image/*" class="w-full px-3 py-1.5 rounded-xl border text-xs bg-gray-50">
                         <textarea id="edit-bio" rows="2" class="w-full p-2.5 rounded-xl border text-xs" placeholder="Biografía..."></textarea>
                         <select id="edit-social-privacy" class="w-full text-xs bg-gray-50 border rounded-lg px-2.5 py-2">
                             <option value="public">Redes Públicas para todos</option>
@@ -212,13 +219,13 @@
                 </div>
             </div>
 
-            <!-- VISTA 3: AMIGOS -->
+            <!-- VISTA 3: AMIGOS CON OPCIÓN DE NOTIFICACIONES -->
             <div id="view-friends" class="hidden space-y-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between gap-3">
                         <div>
                             <h3 class="font-bold text-base text-cobaesGreen"><i class="fa-solid fa-user-group mr-1"></i> Comunidad COBAES 63</h3>
-                            <p class="text-xs text-gray-500">Busca compañeros o compártelos por WhatsApp.</p>
+                            <p class="text-xs text-gray-500">Agrega amigos y activa alertas para sus publicaciones.</p>
                         </div>
                         <input type="text" id="search-user-input" oninput="filterCommunityUsers()" placeholder="Buscar por nombre..." class="px-3 py-2 rounded-xl border text-xs focus:outline-none w-full sm:w-56">
                     </div>
@@ -303,8 +310,8 @@
     <script>
         let currentUser = JSON.parse(localStorage.getItem('cobaes_current_user')) || null;
         let users = JSON.parse(localStorage.getItem('cobaes_users')) || [
-            { name: "Oskar Macías", username: "admin", pass: "admin123", role: "Administrador", code: "ADM-63-000", bio: "Admin COBAES 63", avatar: "", socialPrivacy: "public", fb: "oskar.macias", ig: "@oskarmacias", tk: "", friends: ["val_soto"], bestFriends: [], isAdmin: true },
-            { name: "Valeria Soto", username: "val_soto", pass: "1234", role: "Alumno", code: "2026-CB63-4412", bio: "Estudiante 4to semestre", avatar: "", socialPrivacy: "friends", fb: "valeria.soto", ig: "@valesoto", tk: "", friends: ["admin"], bestFriends: ["admin"] }
+            { name: "Oskar Macías Limon", username: "admin", pass: "admin123", role: "Administrador", code: "ADM-63-000", bio: "Admin COBAES 63", avatar: "", socialPrivacy: "public", fb: "oskar.macias", ig: "@oskarmacias", tk: "", friends: ["val_soto"], bestFriends: [], notifyFriends: [], isAdmin: true },
+            { name: "Valeria Soto", username: "val_soto", pass: "1234", role: "Alumno", code: "2026-CB63-4412", bio: "Estudiante 4to semestre", avatar: "", socialPrivacy: "friends", fb: "valeria.soto", ig: "@valesoto", tk: "", friends: ["admin"], bestFriends: [], notifyFriends: [], isAdmin: false }
         ];
         let posts = JSON.parse(localStorage.getItem('cobaes_posts')) || [];
         let stories = JSON.parse(localStorage.getItem('cobaes_stories')) || [];
@@ -333,7 +340,7 @@
             const code = document.getElementById('reg-code').value.trim();
 
             if (users.some(u => u.username === username)) { alert('Usuario ya registrado.'); return; }
-            const newUser = { name, username, pass, role, code, avatar: "", bio: "Sin descripción", socialPrivacy: "public", fb: "", ig: "", tk: "", friends: [], bestFriends: [], isAdmin: false };
+            const newUser = { name, username, pass, role, code, avatar: "", bio: "Sin descripción", socialPrivacy: "public", fb: "", ig: "", tk: "", friends: [], bestFriends: [], notifyFriends: [], isAdmin: false };
             users.push(newUser);
             localStorage.setItem('cobaes_users', JSON.stringify(users));
             currentUser = newUser;
@@ -405,13 +412,42 @@
             if (viewName === 'admin') renderAdminSuggestions();
         }
 
-        // HISTORIAS DESDE EL DISPOSITIVO
+        // CARGAR FOTO DIRECTAMENTE DESDE EL PERFIL (CLIC EN EL AVATAR)
+        function uploadProfileAvatarDirect(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUser.avatar = e.target.result;
+                    const idx = users.findIndex(u => u.username === currentUser.username);
+                    if (idx > -1) users[idx] = currentUser;
+                    localStorage.setItem('cobaes_users', JSON.stringify(users));
+                    localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
+                    showFeedView();
+                    alert('¡Foto de perfil actualizada con éxito!');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // HISTORIAS DESDE EL DISPOSITIVO Y NOTIFICAR A AMIGOS CON ALERTA ACTIVADA
         function uploadStoryFromDevice(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    stories.unshift({ id: Date.now(), author: currentUser.name, media: e.target.result, timestamp: "Hace un momento" });
+                    const newStory = { id: Date.now(), author: currentUser.name, username: currentUser.username, media: e.target.result, timestamp: "Hace un momento" };
+                    stories.unshift(newStory);
                     localStorage.setItem('cobaes_stories', JSON.stringify(stories));
+                    
+                    // Notificar a amigos que tengan activada la alerta
+                    users.forEach(u => {
+                        if (u.notifyFriends && u.notifyFriends.includes(currentUser.username)) {
+                            // Añadir notificación guardada en localStorage global para ese usuario
+                            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+                            allNotifs.unshift({ id: Date.now(), targetUser: u.username, text: `${currentUser.name} subió una nueva historia 📸`, postId: newStory.id, read: false });
+                            localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
+                        }
+                    });
+
                     renderStories();
                     alert('¡Historia subida con éxito!');
                 }
@@ -431,36 +467,60 @@
             `).join('');
         }
 
-        // NOTIFICACIONES
+        // NOTIFICACIONES Y CLIC PARA LLEGAR AL CONTENIDO
         function toggleNotifications() {
             const dropdown = document.getElementById('notif-dropdown');
             dropdown.classList.toggle('hidden');
             renderNotificationsList();
         }
 
-        function addNotification(text) {
-            notifications.unshift({ id: Date.now(), text, read: false });
-            localStorage.setItem('cobaes_notifs', JSON.stringify(notifications));
+        function addNotification(targetUsername, text, postId) {
+            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+            allNotifs.unshift({ id: Date.now(), targetUser: targetUsername, text, postId, read: false });
+            localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
             renderNotificationsBadge();
         }
 
         function renderNotificationsBadge() {
-            const unread = notifications.filter(n => !n.read).length;
+            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+            const userNotifs = allNotifs.filter(n => n.targetUser === currentUser.username && !n.read);
             const badge = document.getElementById('notif-badge');
-            if (unread > 0) { badge.innerText = unread; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+            if (userNotifs.length > 0) { badge.innerText = userNotifs.length; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
         }
 
         function renderNotificationsList() {
             const list = document.getElementById('notif-list');
-            if (notifications.length === 0) { list.innerHTML = `<p class="text-gray-400 text-center py-2">Sin notificaciones</p>`; return; }
-            list.innerHTML = notifications.map(n => `<div class="p-2 bg-gray-50 rounded-lg border ${n.read ? 'opacity-60' : 'font-bold'}">${n.text}</div>`).join('');
+            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+            const userNotifs = allNotifs.filter(n => n.targetUser === currentUser.username);
+
+            if (userNotifs.length === 0) { list.innerHTML = `<p class="text-gray-400 text-center py-2">Sin notificaciones</p>`; return; }
+            
+            list.innerHTML = userNotifs.map(n => `
+                <div onclick="goToPost(${n.postId})" class="p-2 bg-gray-50 rounded-lg border cursor-pointer hover:bg-gray-100 transition ${n.read ? 'opacity-60' : 'font-bold'}">
+                    ${n.text}
+                </div>
+            `).join('');
         }
 
         function clearNotifications() {
-            notifications.forEach(n => n.read = true);
-            localStorage.setItem('cobaes_notifs', JSON.stringify(notifications));
+            let allNotifs = JSON.parse(localStorage.getItem('cobaes_notifs')) || [];
+            allNotifs.forEach(n => { if (n.targetUser === currentUser.username) n.read = true; });
+            localStorage.setItem('cobaes_notifs', JSON.stringify(allNotifs));
             renderNotificationsBadge();
             renderNotificationsList();
+        }
+
+        function goToPost(postId) {
+            document.getElementById('notif-dropdown').classList.add('hidden');
+            switchView('feed');
+            setTimeout(() => {
+                const el = document.getElementById(`post-card-${postId}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('ring-4', 'ring-cobaesGreen');
+                    setTimeout(() => el.classList.remove('ring-4', 'ring-cobaesGreen'), 2000);
+                }
+            }, 100);
         }
 
         // PERFIL
@@ -483,15 +543,6 @@
             currentUser.ig = document.getElementById('edit-ig').value.trim();
             currentUser.tk = document.getElementById('edit-tk').value.trim();
 
-            const file = document.getElementById('edit-avatar-file').files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) { currentUser.avatar = e.target.result; saveProfileFinal(); }
-                reader.readAsDataURL(file);
-            } else { saveProfileFinal(); }
-        }
-
-        function saveProfileFinal() {
             const idx = users.findIndex(u => u.username === currentUser.username);
             if (idx > -1) users[idx] = currentUser;
             localStorage.setItem('cobaes_users', JSON.stringify(users));
@@ -511,31 +562,54 @@
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`¡Mi perfil en COBAES 63 Connect!\nNombre: ${currentUser.name}\nRol: ${currentUser.role}`)}`, '_blank');
         }
 
-        // AMIGOS
+        // AMIGOS Y ACTIVAR NOTIFICACIONES DE AMIGOS
         function toggleFriend(username) {
             currentUser.friends.includes(username) ? currentUser.friends = currentUser.friends.filter(u => u !== username) : currentUser.friends.push(username);
+            updateUserStorage();
+            renderCommunityUsers();
+        }
+
+        function toggleNotifyFriend(username) {
+            if (!currentUser.notifyFriends) currentUser.notifyFriends = [];
+            currentUser.notifyFriends.includes(username) ? currentUser.notifyFriends = currentUser.notifyFriends.filter(u => u !== username) : currentUser.notifyFriends.push(username);
+            updateUserStorage();
+            renderCommunityUsers();
+        }
+
+        function updateUserStorage() {
             const idx = users.findIndex(u => u.username === currentUser.username);
             if (idx > -1) users[idx] = currentUser;
             localStorage.setItem('cobaes_users', JSON.stringify(users));
             localStorage.setItem('cobaes_current_user', JSON.stringify(currentUser));
-            renderCommunityUsers();
         }
 
         function renderCommunityUsers() {
             const term = document.getElementById('search-user-input').value.toLowerCase();
             const list = document.getElementById('community-users-list');
             const others = users.filter(u => u.username !== currentUser.username && u.name.toLowerCase().includes(term));
-            list.innerHTML = others.map(u => `
-                <div class="bg-gray-50 p-3 rounded-xl border flex items-center justify-between">
-                    <div>
-                        <h4 class="font-bold text-xs">${u.name}</h4>
-                        <p class="text-[10px] text-gray-400">${u.role}</p>
+            
+            list.innerHTML = others.map(u => {
+                const isFriend = currentUser.friends.includes(u.username);
+                const isNotifOn = currentUser.notifyFriends && currentUser.notifyFriends.includes(u.username);
+                return `
+                    <div class="bg-gray-50 p-3 rounded-xl border flex flex-col space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-xs">${u.name}</h4>
+                                <p class="text-[10px] text-gray-400">${u.role}</p>
+                            </div>
+                            <button onclick="toggleFriend('${u.username}')" class="px-3 py-1 rounded-lg text-xs font-bold ${isFriend ? 'bg-red-50 text-red-600' : 'bg-cobaesGreen text-white'}">
+                                ${isFriend ? 'Amigo' : 'Agregar'}
+                            </button>
+                        </div>
+                        ${isFriend ? `
+                            <button onclick="toggleNotifyFriend('${u.username}')" class="text-[11px] font-semibold text-left text-cobaesGreen hover:underline flex items-center gap-1">
+                                <i class="fa-solid fa-bell${isNotifOn ? '' : '-slash'}"></i> ${isNotifOn ? 'Notificaciones de publicaciones activas' : 'Activar notificaciones de publicaciones'}
+                            </button>
+                        ` : ''}
                     </div>
-                    <button onclick="toggleFriend('${u.username}')" class="px-3 py-1 rounded-lg text-xs font-bold ${currentUser.friends.includes(u.username) ? 'bg-red-50 text-red-600' : 'bg-cobaesGreen text-white'}">
-                        ${currentUser.friends.includes(u.username) ? 'Amigo' : 'Agregar'}
-                    </button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function filterCommunityUsers() { renderCommunityUsers(); }
@@ -586,7 +660,7 @@
             list.innerHTML = suggestions.map(s => `<div class="p-3 bg-gray-50 rounded-xl border text-xs"><p class="font-bold text-cobaesGreen">${s.author} - ${s.subject}</p><p>${s.message}</p></div>`).join('');
         }
 
-        // PUBLICACIONES
+        // PUBLICACIONES Y NOTIFICAR A AMIGOS
         function previewPostMedia(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -604,14 +678,17 @@
             const audience = document.getElementById('post-audience').value;
             if (!text && !tempPostMediaBase64) return;
 
+            const newPostId = Date.now();
+            posts.unshift({ id: newPostId, author: currentUser.name, username: currentUser.username, role: currentUser.role, category, audience, text, media: tempPostMediaBase64, reactions: { like: 0, pride: 0, fire: 0, useful: 0 }, reactedBy: [], comments: [], timestamp: "Hace un momento" });
+            localStorage.setItem('cobaes_posts', JSON.stringify(posts));
+
+            // Notificar a amigos que hayan activado notificaciones para este usuario
             users.forEach(u => {
-                if (text.includes(`@${u.username}`)) {
-                    text = text.replace(`@${u.username}`, `<span class="text-cobaesGreen font-bold">@${u.name}</span>`);
+                if (u.notifyFriends && u.notifyFriends.includes(currentUser.username)) {
+                    addNotification(u.username, `${currentUser.name} hizo una nueva publicación 📝`, newPostId);
                 }
             });
 
-            posts.unshift({ id: Date.now(), author: currentUser.name, username: currentUser.username, role: currentUser.role, category, audience, text, media: tempPostMediaBase64, reactions: { like: 0, pride: 0, fire: 0, useful: 0 }, reactedBy: [], comments: [], timestamp: "Hace un momento" });
-            localStorage.setItem('cobaes_posts', JSON.stringify(posts));
             document.getElementById('post-text').value = '';
             clearPostMedia();
             renderPosts();
@@ -628,7 +705,12 @@
                 post.reactions[type]++;
                 post.reactedBy.push(currentUser.username);
                 localStorage.setItem('cobaes_posts', JSON.stringify(posts));
-                addNotification(`A ${currentUser.name} le gustó tu publicación.`);
+                
+                // Notificar al autor del post
+                const authorUser = users.find(u => u.name === post.author);
+                if (authorUser && authorUser.username !== currentUser.username) {
+                    addNotification(authorUser.username, `A ${currentUser.name} le gustó tu publicación ❤️`, post.id);
+                }
                 renderPosts();
             }
         }
@@ -642,7 +724,11 @@
             if (post) {
                 post.comments.push({ author: currentUser.name, text });
                 localStorage.setItem('cobaes_posts', JSON.stringify(posts));
-                addNotification(`${currentUser.name} comentó tu publicación.`);
+                
+                const authorUser = users.find(u => u.name === post.author);
+                if (authorUser && authorUser.username !== currentUser.username) {
+                    addNotification(authorUser.username, `${currentUser.name} comentó tu foto 💬`, post.id);
+                }
                 renderPosts();
             }
         }
@@ -653,7 +739,7 @@
             if (visible.length === 0) { feed.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-gray-400 border">Sin publicaciones.</div>`; return; }
 
             feed.innerHTML = visible.map(post => `
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div id="post-card-${post.id}" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition duration-300">
                     <div class="p-4 flex items-center justify-between pb-2">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-cobaesGreen text-white font-bold rounded-full flex items-center justify-center text-sm">${post.author.charAt(0)}</div>
