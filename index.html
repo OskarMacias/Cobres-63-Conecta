@@ -216,9 +216,9 @@
                             <option value="public">Redes Públicas para todos</option>
                             <option value="friends">Redes solo para Amigos</option>
                         </select>
-                        <input type="text" id="edit-fb" placeholder="Facebook (ej. oskar.macias)" class="w-full px-3 py-1.5 rounded-xl border text-xs">
-                        <input type="text" id="edit-ig" placeholder="Instagram (ej. @oskarmacias)" class="w-full px-3 py-1.5 rounded-xl border text-xs">
-                        <input type="text" id="edit-tk" placeholder="TikTok (ej. @oskarmacias)" class="w-full px-3 py-1.5 rounded-xl border text-xs">
+                        <input type="text" id="edit-fb" placeholder="Facebook (ej. oskar.macias)" class="w-full px-3 py-1.5 rounded-lg border text-xs">
+                        <input type="text" id="edit-ig" placeholder="Instagram (ej. @oskarmacias)" class="w-full px-3 py-1.5 rounded-lg border text-xs">
+                        <input type="text" id="edit-tk" placeholder="TikTok (ej. @oskarmacias)" class="w-full px-3 py-1.5 rounded-lg border text-xs">
                         <button type="submit" class="bg-cobaesGreen text-white font-bold px-5 py-2 rounded-xl text-xs shadow">Guardar Cambios</button>
                     </form>
                 </div>
@@ -344,7 +344,10 @@
                 <span id="viewer-author" class="font-bold text-xs">Usuario</span>
                 <span id="viewer-time" class="text-[10px] text-gray-300">Hace un momento</span>
             </div>
-            <button onclick="closeStoryViewer()" class="text-white text-xl px-2">✕</button>
+            <div class="flex items-center gap-3">
+                <button id="viewer-delete-btn" onclick="deleteCurrentStory()" class="hidden bg-red-600 hover:bg-red-700 text-white text-xs px-2.5 py-1 rounded-lg font-bold"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <button onclick="closeStoryViewer()" class="text-white text-xl px-2">✕</button>
+            </div>
         </div>
         <div class="flex-grow flex items-center justify-center relative my-2">
             <img id="viewer-img" class="max-h-[70vh] object-contain rounded-xl">
@@ -444,7 +447,6 @@
         window.addEventListener('DOMContentLoaded', () => { 
             cleanExpiredStories();
             if (currentUser) {
-                // Verificar si fue suspendido
                 const freshUser = users.find(u => u.username === currentUser.username);
                 if (freshUser && freshUser.suspended) {
                     alert('Tu cuenta se encuentra suspendida temporalmente por sanción.');
@@ -457,8 +459,9 @@
 
         // UTILIDAD DE TIEMPO TRANSCURRIDO REAL
         function timeAgo(timestamp) {
-            const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
-            if (seconds < 60) return "Hace un momento";
+            if (!timestamp) return "Hace un momento";
+            const seconds = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000);
+            if (isNaN(seconds) || seconds < 60) return "Hace un momento";
             const minutes = Math.floor(seconds / 60);
             if (minutes < 60) return `Hace ${minutes} min`;
             const hours = Math.floor(minutes / 60);
@@ -469,8 +472,8 @@
 
         // LIMPIAR HISTORIAS DE MÁS DE 24 HORAS
         function cleanExpiredStories() {
-            const now = new Date();
-            stories = stories.filter(s => (now - new Date(s.timestamp)) < 24 * 60 * 60 * 1000);
+            const now = Date.now();
+            stories = stories.filter(s => (now - new Date(s.timestamp).getTime()) < 24 * 60 * 60 * 1000);
             localStorage.setItem('cobaes_stories', JSON.stringify(stories));
         }
 
@@ -542,7 +545,7 @@
             recoveryRequests.unshift({ id: Date.now(), username, name: userFound.name, code, phone, timestamp: new Date() });
             localStorage.setItem('cobaes_recoveries', JSON.stringify(recoveryRequests));
             closeRecoveryModal();
-            alert('¡Solicitud enviada al Administrador con éxito! Revisa con soporte o espera a que el admin te asigne tu contraseña provisional.');
+            alert('¡Solicitud enviada al Administrador con éxito! Espera a que el admin te asigne tu contraseña provisional.');
         }
 
         function showFeedView() {
@@ -657,7 +660,7 @@
             showFeedView();
         }
 
-        // HISTORIAS (24 HORAS)
+        // HISTORIAS (24 HORAS Y ELIMINACIÓN)
         function prepareStoryEdit(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -683,7 +686,7 @@
             localStorage.setItem('cobaes_stories', JSON.stringify(stories));
             closeStoryEditor();
             renderStories();
-            alert('¡Historia publicada con éxito! Estará visible por 24 horas.');
+            alert('¡Historia publicada con éxito!');
         }
 
         function renderStories() {
@@ -709,7 +712,13 @@
             }).join('');
         }
 
-        function openStoryViewer(arr) { currentViewerStories = arr; viewerIndex = 0; document.getElementById('story-viewer-modal').classList.remove('hidden'); showCurrentStoryInViewer(); }
+        function openStoryViewer(arr) { 
+            currentViewerStories = arr; 
+            viewerIndex = 0; 
+            document.getElementById('story-viewer-modal').classList.remove('hidden'); 
+            showCurrentStoryInViewer(); 
+        }
+
         function showCurrentStoryInViewer() {
             const s = currentViewerStories[viewerIndex];
             document.getElementById('viewer-author').innerText = s.author;
@@ -718,10 +727,38 @@
             document.getElementById('viewer-img').src = s.media;
             const cap = document.getElementById('viewer-caption');
             if (s.caption) { cap.innerText = s.caption; cap.classList.remove('hidden'); } else { cap.classList.add('hidden'); }
+
+            // Mostrar botón de eliminar si es dueño o admin
+            const delBtn = document.getElementById('viewer-delete-btn');
+            if (currentUser && (s.username === currentUser.username || currentUser.isAdmin)) {
+                delBtn.classList.remove('hidden');
+            } else {
+                delBtn.classList.add('hidden');
+            }
         }
+
         function nextStory() { if (viewerIndex < currentViewerStories.length - 1) { viewerIndex++; showCurrentStoryInViewer(); } else { closeStoryViewer(); } }
         function prevStory() { if (viewerIndex > 0) { viewerIndex--; showCurrentStoryInViewer(); } }
         function closeStoryViewer() { document.getElementById('story-viewer-modal').classList.add('hidden'); }
+
+        function deleteCurrentStory() {
+            const s = currentViewerStories[viewerIndex];
+            if (!confirm('¿Deseas eliminar esta historia?')) return;
+            stories = stories.filter(st => st.id !== s.id);
+            localStorage.setItem('cobaes_stories', JSON.stringify(stories));
+            closeStoryViewer();
+            renderStories();
+            alert('Historia eliminada.');
+        }
+
+        // ELIMINAR PUBLICACIÓN
+        function deletePost(postId) {
+            if (!confirm('¿Estás seguro de eliminar esta publicación?')) return;
+            posts = posts.filter(p => p.id !== postId);
+            localStorage.setItem('cobaes_posts', JSON.stringify(posts));
+            renderPosts();
+            alert('Publicación eliminada.');
+        }
 
         // LIGHTBOX FOTO AMPLIADA
         function openLightbox(postId) {
@@ -910,7 +947,7 @@
             alert('¡Enviado!');
         }
 
-        // PANEL ADMIN (RECUPERACIONES Y SANCIONES)
+        // PANEL ADMIN
         function renderAdminSuggestions() {
             const list = document.getElementById('admin-suggestions-list');
             if (suggestions.length === 0) { list.innerHTML = `<p class="text-xs text-gray-400">Sin mensajes en buzón.</p>`; return; }
@@ -1049,36 +1086,40 @@
             const visible = posts.filter(p => currentFilter === 'all' || p.category === currentFilter);
             if (visible.length === 0) { feed.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-gray-400 border">Sin publicaciones.</div>`; return; }
 
-            feed.innerHTML = visible.map(post => `
-                <div id="post-card-${post.id}" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition duration-300">
-                    <div class="p-4 flex items-center justify-between pb-2">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-cobaesGreen text-white font-bold rounded-full flex items-center justify-center text-sm">${post.author.charAt(0)}</div>
-                            <div>
-                                <h4 class="font-bold text-sm text-gray-800">${post.author} <span class="bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.2 rounded-full">✓</span></h4>
-                                <p class="text-[10px] text-gray-400">${post.role} • ${timeAgo(post.timestamp)}</p>
+            feed.innerHTML = visible.map(post => {
+                const canDelete = currentUser && (post.username === currentUser.username || currentUser.isAdmin);
+                return `
+                    <div id="post-card-${post.id}" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition duration-300">
+                        <div class="p-4 flex items-center justify-between pb-2">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-cobaesGreen text-white font-bold rounded-full flex items-center justify-center text-sm">${post.author.charAt(0)}</div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-800">${post.author} <span class="bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.2 rounded-full">✓</span></h4>
+                                    <p class="text-[10px] text-gray-400">${post.role} • ${timeAgo(post.timestamp)}</p>
+                                </div>
                             </div>
+                            ${canDelete ? `<button onclick="deletePost(${post.id})" class="text-gray-400 hover:text-red-600 p-2 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </div>
+                        <div class="px-4 py-2 text-sm text-gray-700">${post.text}</div>
+                        ${post.media ? `<div class="bg-black max-h-96 flex items-center justify-center cursor-pointer" onclick="openLightbox(${post.id})"><img src="${post.media}" class="w-full object-cover max-h-96"></div>` : ''}
+                        
+                        <div class="px-4 py-2.5 border-t flex flex-wrap gap-2 text-xs text-gray-600">
+                            <button onclick="reactPost(${post.id}, 'like')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">👍 ${post.reactions.like || 0}</button>
+                            <button onclick="reactPost(${post.id}, 'pride')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">🏫 Orgullo (${post.reactions.pride || 0})</button>
+                            <button onclick="reactPost(${post.id}, 'fire')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">🔥 Ambiente (${post.reactions.fire || 0})</button>
+                            <button onclick="reactPost(${post.id}, 'useful')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">📚 Útil (${post.reactions.useful || 0})</button>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 border-t space-y-2">
+                            ${post.comments.map(c => `<div class="bg-white p-2 rounded-lg border text-xs"><div class="flex justify-between"><span class="font-bold text-cobaesGreen">${c.author}</span><span class="text-[9px] text-gray-400">${timeAgo(c.timestamp)}</span></div><p>${c.text}</p></div>`).join('')}
+                            <form onsubmit="addComment(${post.id}, event)" class="flex gap-2 pt-1">
+                                <input type="text" id="comment-input-${post.id}" placeholder="Comentar..." class="flex-grow px-3 py-1.5 rounded-lg border text-xs bg-white">
+                                <button type="submit" class="bg-cobaesGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold">Comentar</button>
+                            </form>
                         </div>
                     </div>
-                    <div class="px-4 py-2 text-sm text-gray-700">${post.text}</div>
-                    ${post.media ? `<div class="bg-black max-h-96 flex items-center justify-center cursor-pointer" onclick="openLightbox(${post.id})"><img src="${post.media}" class="w-full object-cover max-h-96"></div>` : ''}
-                    
-                    <div class="px-4 py-2.5 border-t flex flex-wrap gap-2 text-xs text-gray-600">
-                        <button onclick="reactPost(${post.id}, 'like')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">👍 ${post.reactions.like || 0}</button>
-                        <button onclick="reactPost(${post.id}, 'pride')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">🏫 Orgullo (${post.reactions.pride || 0})</button>
-                        <button onclick="reactPost(${post.id}, 'fire')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">🔥 Ambiente (${post.reactions.fire || 0})</button>
-                        <button onclick="reactPost(${post.id}, 'useful')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">📚 Útil (${post.reactions.useful || 0})</button>
-                    </div>
-
-                    <div class="bg-gray-50 p-4 border-t space-y-2">
-                        ${post.comments.map(c => `<div class="bg-white p-2 rounded-lg border text-xs"><div class="flex justify-between"><span class="font-bold text-cobaesGreen">${c.author}</span><span class="text-[9px] text-gray-400">${timeAgo(c.timestamp)}</span></div><p>${c.text}</p></div>`).join('')}
-                        <form onsubmit="addComment(${post.id}, event)" class="flex gap-2 pt-1">
-                            <input type="text" id="comment-input-${post.id}" placeholder="Comentar..." class="flex-grow px-3 py-1.5 rounded-lg border text-xs bg-white">
-                            <button type="submit" class="bg-cobaesGreen text-white px-3 py-1.5 rounded-lg text-xs font-bold">Comentar</button>
-                        </form>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
     </script>
 </body>
