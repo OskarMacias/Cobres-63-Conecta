@@ -78,7 +78,7 @@
                 <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Número de Celular (10 dígitos)</label>
-                        <input type="tel" id="login-phone" required pattern="[0-9]{10}" maxlength="10" minlength="10" class="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none" placeholder="Ej. 6671234567" title="Debe contener exactamente 10 dígitos numéricos">
+                        <input type="tel" id="login-phone" required pattern="[0-9]{10}" maxlength="10" minlength="10" class="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none" placeholder="Ej. 6670000000" title="Debe contener exactamente 10 dígitos numéricos">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Contraseña</label>
@@ -170,10 +170,18 @@
                     </form>
                 </div>
 
-                <div class="flex space-x-2">
-                    <button onclick="filterFeed('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cobaesGreen text-white">Todo</button>
-                    <button onclick="filterFeed('noticias')" id="filter-noticias" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-gray-600 border">Noticias</button>
-                    <button onclick="filterFeed('general')" id="filter-general" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-gray-600 border">Estados</button>
+                <div class="flex items-center justify-between">
+                    <div class="flex space-x-2">
+                        <button onclick="filterFeed('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cobaesGreen text-white">Todo</button>
+                        <button onclick="filterFeed('noticias')" id="filter-noticias" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-gray-600 border">Noticias</button>
+                        <button onclick="filterFeed('general')" id="filter-general" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-gray-600 border">Estados</button>
+                    </div>
+                    <!-- INTERRUPTOR MODO ADMIN TOTAL EN EL MURO -->
+                    <div id="admin-bypass-container" class="hidden">
+                        <button onclick="toggleAdminBypass()" id="admin-bypass-btn" class="text-xs font-bold px-3 py-1.5 rounded-lg border bg-amber-50 text-amber-800 border-amber-300 flex items-center gap-1">
+                            <i class="fa-solid fa-eye-slash"></i> <span id="bypass-text">Modo Normal</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div id="posts-feed" class="space-y-4"></div>
@@ -270,9 +278,9 @@
 
             <!-- VISTA 6: ADMIN -->
             <div id="view-admin" class="hidden space-y-4">
-                <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl">
-                    <h3 class="font-bold text-amber-900 text-sm"><i class="fa-solid fa-shield-halved mr-1"></i> Panel Administrador</h3>
-                    <p class="text-xs text-amber-800 mt-1">Gestiona solicitudes de recuperación de cuentas por teléfono y sanciones a usuarios.</p>
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-amber-900 text-sm"><i class="fa-solid fa-shield-halved mr-1"></i> Panel Administrador Total</h3>
+                    <p class="text-xs text-amber-800">Tienes acceso de superusuario para ver todas las publicaciones privadas/amigos, aprobar recuperaciones de cuenta y sancionar usuarios.</p>
                 </div>
                 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
@@ -295,7 +303,7 @@
 
     </main>
 
-    <!-- MODAL DE RECUPERACIÓN DE CONTRASEÑA POR TELÉFONO -->
+    <!-- MODAL DE RECUPERACIÓN DE CONTRASEÑA -->
     <div id="recovery-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
             <h3 class="font-bold text-base text-cobaesGreen"><i class="fa-solid fa-phone mr-1"></i> Recuperar con Celular</h3>
@@ -338,6 +346,10 @@
                 <span id="viewer-time" class="text-[10px] text-gray-300">Hace un momento</span>
             </div>
             <div class="flex items-center gap-3">
+                <!-- CONTADOR DE VISTAS (Visible para el autor o admin) -->
+                <div id="viewer-views-counter" class="text-xs bg-white bg-opacity-20 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-eye"></i> <span id="views-count-num">0</span> vistas
+                </div>
                 <button id="viewer-delete-btn" onclick="deleteCurrentStory()" class="hidden bg-red-600 hover:bg-red-700 text-white text-xs px-2.5 py-1 rounded-lg font-bold"><i class="fa-solid fa-trash"></i> Eliminar</button>
                 <button onclick="closeStoryViewer()" class="text-white text-xl px-2">✕</button>
             </div>
@@ -436,6 +448,7 @@
         let currentViewerStories = [];
         let viewerIndex = 0;
         let currentLightboxPostId = null;
+        let adminBypassActive = false; // Estado del modo admin total en el feed
 
         window.addEventListener('DOMContentLoaded', () => { 
             cleanExpiredStories();
@@ -450,7 +463,6 @@
             }
         });
 
-        // VALIDACIÓN AUTOMÁTICA DE TELÉFONO (Exactamente 10 dígitos)
         function validarTelefono(phone) {
             const regex = /^\d{10}$/;
             return regex.test(phone);
@@ -533,7 +545,6 @@
             document.getElementById('bottom-nav').classList.add('hidden');
         }
 
-        // RECUPERACIÓN POR TELÉFONO Y MATRÍCULA
         function showRecoveryModal() { document.getElementById('recovery-modal').classList.remove('hidden'); }
         function closeRecoveryModal() { document.getElementById('recovery-modal').classList.add('hidden'); }
         
@@ -585,10 +596,32 @@
             renderProfileSocials(currentUser);
 
             const adminBtn = document.getElementById('admin-menu-btn');
-            if (currentUser.isAdmin) { adminBtn.classList.remove('hidden'); } else { adminBtn.classList.add('hidden'); }
+            const adminBypassContainer = document.getElementById('admin-bypass-container');
+            if (currentUser.isAdmin) { 
+                adminBtn.classList.remove('hidden'); 
+                adminBypassContainer.classList.remove('hidden');
+            } else { 
+                adminBtn.classList.add('hidden'); 
+                adminBypassContainer.classList.add('hidden');
+            }
 
             renderNotificationsBadge();
             switchView('feed');
+        }
+
+        function toggleAdminBypass() {
+            adminBypassActive = !adminBypassActive;
+            const btn = document.getElementById('admin-bypass-btn');
+            const txt = document.getElementById('bypass-text');
+            if (adminBypassActive) {
+                btn.className = "text-xs font-bold px-3 py-1.5 rounded-lg border bg-amber-600 text-white border-amber-700 flex items-center gap-1 shadow";
+                txt.innerText = "Modo Admin Total 🛡️";
+            } else {
+                btn.className = "text-xs font-bold px-3 py-1.5 rounded-lg border bg-amber-50 text-amber-800 border-amber-300 flex items-center gap-1";
+                txt.innerText = "Modo Normal";
+            }
+            renderPosts();
+            renderStories();
         }
 
         function renderProfileSocials(user) {
@@ -671,7 +704,7 @@
             showFeedView();
         }
 
-        // HISTORIAS
+        // HISTORIAS Y MODO FANTASMA (ADMIN)
         function prepareStoryEdit(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -692,7 +725,7 @@
         function publishStory() {
             const caption = document.getElementById('story-caption-input').value.trim();
             if (!tempStoryMedia) return;
-            const newStory = { id: Date.now(), author: currentUser.name, phone: currentUser.phone, media: tempStoryMedia, caption: caption, timestamp: new Date() };
+            const newStory = { id: Date.now(), author: currentUser.name, phone: currentUser.phone, media: tempStoryMedia, caption: caption, viewers: [], timestamp: new Date() };
             stories.unshift(newStory);
             localStorage.setItem('cobaes_stories', JSON.stringify(stories));
             closeStoryEditor();
@@ -705,8 +738,17 @@
             const tray = document.getElementById('stories-tray');
             const grouped = {};
             stories.forEach(s => {
-                if (!grouped[s.author]) grouped[s.author] = [];
-                grouped[s.author].push(s);
+                // Si el admin activa el bypass, ve todas las historias de todos los usuarios
+                if (currentUser.isAdmin && adminBypassActive) {
+                    if (!grouped[s.author]) grouped[s.author] = [];
+                    grouped[s.author].push(s);
+                } else {
+                    // Filtrado normal según amigos / propias
+                    if (s.phone === currentUser.phone || currentUser.friends.includes(s.phone)) {
+                        if (!grouped[s.author]) grouped[s.author] = [];
+                        grouped[s.author].push(s);
+                    }
+                }
             });
             const authors = Object.keys(grouped);
             if (authors.length === 0) { tray.innerHTML = `<span class="text-xs text-gray-400">No hay historias activas.</span>`; return; }
@@ -732,10 +774,25 @@
 
         function showCurrentStoryInViewer() {
             const s = currentViewerStories[viewerIndex];
+            
+            // REGISTRAR VISTA (EXCEPTO SI ES ADMIN EN MODO FANTASMA/BYPASS)
+            if (!currentUser.isAdmin || !adminBypassActive) {
+                if (!s.viewers) s.viewers = [];
+                if (!s.viewers.includes(currentUser.phone)) {
+                    s.viewers.push(currentUser.phone);
+                    localStorage.setItem('cobaes_stories', JSON.stringify(stories));
+                }
+            }
+
             document.getElementById('viewer-author').innerText = s.author;
             document.getElementById('viewer-avatar').innerText = s.author.charAt(0);
             document.getElementById('viewer-time').innerText = timeAgo(s.timestamp);
             document.getElementById('viewer-img').src = s.media;
+            
+            // Actualizar contador de vistas
+            const viewersCount = s.viewers ? s.viewers.length : 0;
+            document.getElementById('views-count-num').innerText = viewersCount;
+
             const cap = document.getElementById('viewer-caption');
             if (s.caption) { cap.innerText = s.caption; cap.classList.remove('hidden'); } else { cap.classList.add('hidden'); }
 
@@ -749,7 +806,7 @@
 
         function nextStory() { if (viewerIndex < currentViewerStories.length - 1) { viewerIndex++; showCurrentStoryInViewer(); } else { closeStoryViewer(); } }
         function prevStory() { if (viewerIndex > 0) { viewerIndex--; showCurrentStoryInViewer(); } }
-        function closeStoryViewer() { document.getElementById('story-viewer-modal').classList.add('hidden'); }
+        function closeStoryViewer() { document.getElementById('story-viewer-modal').classList.add('hidden'); renderStories(); }
 
         function deleteCurrentStory() {
             const s = currentViewerStories[viewerIndex];
@@ -1092,8 +1149,22 @@
 
         function renderPosts() {
             const feed = document.getElementById('posts-feed');
-            const visible = posts.filter(p => currentFilter === 'all' || p.category === currentFilter);
-            if (visible.length === 0) { feed.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-gray-400 border">Sin publicaciones.</div>`; return; }
+            
+            // Si el admin activa el bypass, ve todo sin importar la audiencia
+            const visible = posts.filter(p => {
+                const matchesCategory = (currentFilter === 'all' || p.category === currentFilter);
+                if (!matchesCategory) return false;
+                
+                if (currentUser.isAdmin && adminBypassActive) return true; // Modo Admin Total
+                
+                // Filtro normal
+                if (p.audience === 'public') return true;
+                if (p.phone === currentUser.phone) return true;
+                if (p.audience === 'friends' && currentUser.friends.includes(p.phone)) return true;
+                return false;
+            });
+
+            if (visible.length === 0) { feed.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-gray-400 border">Sin publicaciones disponibles.</div>`; return; }
 
             feed.innerHTML = visible.map(post => {
                 const canDelete = currentUser && (post.phone === currentUser.phone || currentUser.isAdmin);
@@ -1104,7 +1175,7 @@
                                 <div class="w-10 h-10 bg-cobaesGreen text-white font-bold rounded-full flex items-center justify-center text-sm">${post.author.charAt(0)}</div>
                                 <div>
                                     <h4 class="font-bold text-sm text-gray-800">${post.author} <span class="bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.2 rounded-full">✓</span></h4>
-                                    <p class="text-[10px] text-gray-400">${post.role} • ${timeAgo(post.timestamp)}</p>
+                                    <p class="text-[10px] text-gray-400">${post.role} • ${timeAgo(post.timestamp)} <span class="text-[9px] bg-gray-100 px-1 rounded">Audience: ${post.audience}</span></p>
                                 </div>
                             </div>
                             ${canDelete ? `<button onclick="deletePost(${post.id})" class="text-gray-400 hover:text-red-600 p-2 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
@@ -1115,7 +1186,7 @@
                         <div class="px-4 py-2.5 border-t flex flex-wrap gap-2 text-xs text-gray-600">
                             <button onclick="reactPost(${post.id}, 'like')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">👍 ${post.reactions.like || 0}</button>
                             <button onclick="reactPost(${post.id}, 'pride')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">🏫 Orgullo (${post.reactions.pride || 0})</button>
-                            <button onclick="reactPost(${post.id}, 'fire')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">🔥 Ambiente (${post.reactions.fire || 0})</button>
+                            <button onclick="post.id" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold" onclick="reactPost(${post.id}, 'fire')">🔥 Ambiente (${post.reactions.fire || 0})</button>
                             <button onclick="reactPost(${post.id}, 'useful')" class="bg-gray-50 hover:bg-gray-100 px-2.5 py-1 rounded-lg border flex items-center gap-1 font-semibold">📚 Útil (${post.reactions.useful || 0})</button>
                         </div>
 
