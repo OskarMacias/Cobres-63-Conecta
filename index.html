@@ -32,7 +32,7 @@
                     <h1 class="text-base font-bold text-cobaesGreen leading-tight flex items-center gap-1">
                         COBAES 63 <span class="bg-cobaesGreen text-white text-[9px] px-1.5 py-0.2 rounded-full font-normal">Oficial</span>
                     </h1>
-                    <p class="text-[10px] text-gray-500">Colegio de Bachilleres del Estado de Sinaloa[span_0](start_span)[span_0](end_span)</p>
+                    <p class="text-[10px] text-gray-500">Colegio de Bachilleres del Estado de Sinaloa</p>
                 </div>
             </div>
             <div id="header-user-info" class="hidden flex items-center space-x-3">
@@ -74,11 +74,11 @@
                     <button onclick="switchTab('register')" id="tab-register" class="flex-1 pb-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent transition">Registro Escolar</button>
                 </div>
 
-                <!-- LOGIN FORM (CON NÚMERO DE TELÉFONO) -->
+                <!-- LOGIN FORM -->
                 <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Número de Celular</label>
-                        <input type="tel" id="login-phone" required class="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none" placeholder="Ej. 6671234567">
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Número de Celular (10 dígitos)</label>
+                        <input type="tel" id="login-phone" required pattern="[0-9]{10}" maxlength="10" minlength="10" class="w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none" placeholder="Ej. 6671234567" title="Debe contener exactamente 10 dígitos numéricos">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Contraseña</label>
@@ -98,8 +98,8 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Número de Celular</label>
-                            <input type="tel" id="reg-phone" required class="w-full px-3.5 py-2 rounded-xl border text-sm" placeholder="Ej. 6671234567">
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Celular (10 dígitos)</label>
+                            <input type="tel" id="reg-phone" required pattern="[0-9]{10}" maxlength="10" minlength="10" class="w-full px-3.5 py-2 rounded-xl border text-sm" placeholder="Ej. 6671234567" title="Debe contener exactamente 10 dígitos numéricos">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Contraseña</label>
@@ -299,10 +299,10 @@
     <div id="recovery-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
             <h3 class="font-bold text-base text-cobaesGreen"><i class="fa-solid fa-phone mr-1"></i> Recuperar con Celular</h3>
-            <p class="text-xs text-gray-500">Ingresa tu número de celular registrado y tu matrícula o carnet único escolar para validar tu cuenta en el panel del administrador.</p>
+            <p class="text-xs text-gray-500">Ingresa tu número de celular registrado (10 dígitos) y tu matrícula o carnet único escolar para validar tu cuenta en el panel del administrador.</p>
             
             <form onsubmit="submitRecoveryRequest(event)" class="space-y-3">
-                <input type="tel" id="rec-phone" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs" placeholder="Número de celular registrado">
+                <input type="tel" id="rec-phone" required pattern="[0-9]{10}" maxlength="10" minlength="10" class="w-full px-3.5 py-2.5 rounded-xl border text-xs" placeholder="Celular registrado (10 dígitos)" title="Debe contener exactamente 10 dígitos">
                 <input type="text" id="rec-code" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs" placeholder="Matrícula / Crd. Único COBAES">
                 
                 <div class="flex justify-end gap-2 pt-2">
@@ -450,6 +450,12 @@
             }
         });
 
+        // VALIDACIÓN AUTOMÁTICA DE TELÉFONO (Exactamente 10 dígitos)
+        function validarTelefono(phone) {
+            const regex = /^\d{10}$/;
+            return regex.test(phone);
+        }
+
         function timeAgo(timestamp) {
             if (!timestamp) return "Hace un momento";
             const seconds = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000);
@@ -483,6 +489,11 @@
             const role = document.getElementById('reg-role').value;
             const code = document.getElementById('reg-code').value.trim();
 
+            if (!validarTelefono(phone)) {
+                alert('El número de celular debe contener exactamente 10 dígitos numéricos.');
+                return;
+            }
+
             if (users.some(u => u.phone === phone)) { alert('Este número de celular ya está registrado.'); return; }
             if (users.some(u => u.code === code)) { alert('Esta matrícula/código de estudiante ya está registrada.'); return; }
 
@@ -498,6 +509,12 @@
             e.preventDefault();
             const phone = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-password').value;
+
+            if (!validarTelefono(phone)) {
+                alert('Ingresa un número de celular válido de 10 dígitos.');
+                return;
+            }
+
             const found = users.find(u => u.phone === phone && u.pass === pass);
             if (found) {
                 if (found.suspended) { alert('Esta cuenta se encuentra suspendida temporalmente.'); return; }
@@ -524,6 +541,11 @@
             e.preventDefault();
             const phone = document.getElementById('rec-phone').value.trim();
             const code = document.getElementById('rec-code').value.trim();
+
+            if (!validarTelefono(phone)) {
+                alert('El número de celular debe ser de exactamente 10 dígitos.');
+                return;
+            }
 
             const userFound = users.find(u => u.phone === phone && u.code === code);
             if (!userFound) {
